@@ -1,0 +1,58 @@
+use northwind;
+
+select * from customers
+
+select CustomerID, CompanyName from customers
+
+
+select * from orders
+
+select c.CustomerID, CompanyName, OrderID, OrderDate
+  from customers c join Orders o on c.CustomerID = o.CustomerID
+  order by c.CustomerID
+
+
+select c.CustomerID, CompanyName, o.OrderID, OrderDate, od.ProductID
+  from customers c join Orders o on c.CustomerID = o.CustomerID
+                   join `Order Details` od on od.OrderID = o.OrderID
+  order by c.CustomerID
+
+
+
+select c.CustomerID, CompanyName, o.OrderID, OrderDate, od.ProductID, p.ProductName
+  from customers c join Orders o on c.CustomerID = o.CustomerID
+                   join `Order Details` od on od.OrderID = o.OrderID
+                   join Products p on p.ProductID = od.ProductID
+  order by c.CustomerID
+
+-- more than 10 seconds
+
+create index idx_Products_ProductID on Products(ProductID);
+create index idx_OrderDetails_ProductID on `Order Details`(ProductID);
+
+create index idx_Customers_CustomerID on Customers(CustomerID);
+create index idx_Orders_CustomerID on Orders(CustomerID);
+
+create index idx_Orders_OrderID on Orders(OrderID);
+create index idx_OrderDetails_OrderID on `Order Details`(OrderID);
+
+-- less than 0.5 second.
+
+SELECT * FROM information_schema.statistics
+
+SELECT * FROM information_schema.statistics where table_schema = 'northwind';
+
+show index from orders;
+
+
+-- clean up:
+
+drop index idx_Products_ProductID on Products;
+drop index idx_OrderDetails_ProductID on `Order Details`;
+
+drop index idx_Customers_CustomerID on Customers;
+drop index idx_Orders_CustomerID on Orders;
+
+drop index idx_Orders_OrderID on Orders;
+drop index idx_OrderDetails_OrderID on `Order Details`;
+

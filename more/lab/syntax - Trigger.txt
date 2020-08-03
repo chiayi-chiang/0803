@@ -1,0 +1,41 @@
+﻿use test;
+
+drop table if exists t1;
+drop table if exists t2;
+
+create table t1 (id int primary key, data int);
+create table t2 (id int primary key, data int);
+
+drop trigger if exists TriggerToT2;
+
+delimiter $$
+create trigger TriggerToT2
+  after insert on t1
+  for each row
+begin
+  insert into t2 values (new.id, new.data);
+end;
+$$
+delimiter ;
+
+insert into t1 values (1, 100);
+select * from t1;
+select * from t2;
+
+
+drop trigger if exists TriggerToT2WhenUpdate;
+
+delimiter $$
+create trigger TriggerToT2WhenUpdate
+  after update on t1
+  for each row
+begin
+  update t2 set data = new.data where id = old.id;
+end;
+$$
+delimiter ;
+
+update t1 set data = 20 where id = 1;
+
+select * from t1;
+select * from t2;

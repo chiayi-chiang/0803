@@ -1,0 +1,54 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [SQL ] 請問如何建立一個包含排序欄位的VIEW?
+ 時間  Wed Jul 25 01:22:21 2012
+───────────────────────────────────────
+
+※ 引述《l7class》之銘言：
+: 假設來源TABLE有二個欄位, 五筆資料
+: ITEM.  AMOUNT.
+: AA        100
+: BBB      2020
+: C         333
+: DD       4004
+: E          55
+: 那如果換做不排序呢？
+: 僅是要產生出一個新的no.
+: No.    ITEM.    AMOUNT.
+: 1       AA        100
+: 2       BBB      2020
+: 3       C         333
+: 4       DD       4004
+: 5       E          55
+: 請問開VIEW的語法為?
+
+如果是 Oracle，請 Google 查詢 rownum。
+
+如果是 Microsoft SQL Server，請 Google 查詢 Rank(), Row_number() 函數。
+
+
+如果是 MySQL，就比較麻煩了...
+
+舉例來說:
+use test;
+create table lab (id int primary key, data int);
+insert into lab values (1, 10), (2, 20), (3, 30);
+
+以下的語法，可以產生出「列號」的效果:
+select id, data, @no := @no + 1 from lab, (select @no := 0) r;
+
+
+可惜，不能用來建立 VIEW:
+create view vTest as
+select id, data, @no := @no + 1 from lab, (select @no := 0) r;
+會有下列的錯誤訊息:
+View's SELECT contains a variable or parameter
+
+
+所以，只能採取下列寫法，這種寫法的缺點在於：如果沒編好索引，會很慢:
+create view vTest as
+select id, Data, (select count(*) from Lab where id <= L.id) as rno
+  from Lab L order by id ASC;
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 118.170.134.191

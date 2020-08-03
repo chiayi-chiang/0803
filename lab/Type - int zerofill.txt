@@ -1,0 +1,14 @@
+use test;
+
+drop table Lab;
+
+create table Lab
+(
+  id int auto_increment primary key,
+  data int(5) zerofill not null
+);
+
+insert into Lab (data) values (10);
+
+select * from Lab;
+

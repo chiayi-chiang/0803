@@ -1,0 +1,83 @@
+use test;
+
+drop table lab;
+
+create table lab
+(
+  id int auto_increment primary key,
+  data int,
+  at timestamp
+);
+
+
+
+-- check and enable event_scheduler
+
+show variables like 'event_scheduler';
+show variables like 'even%';
+
+set global event_scheduler = on;
+show variables like 'event_scheduler';
+
+
+
+-- Lab: run at specific timestamp
+
+delimiter $$
+create event tryEvent
+  on schedule at '2016-03-19 01:15:00'
+do
+begin
+  insert into lab (data) values (unix_timestamp());
+end
+$$
+delimiter ;
+
+select * from lab;
+
+show events;
+
+
+-- Lab: run at specific timestamp (will not delete event on completion)
+
+delimiter $$
+create event tryEvent
+  on schedule at '2016-03-19 01:20:00'
+  on completion preserve
+do
+begin
+  insert into lab (data) values (unix_timestamp());
+end
+$$
+delimiter ;
+
+select * from lab;
+
+show events;
+
+drop event tryEvent;
+
+
+
+
+
+
+-- Lab: run program per 10 seconds.
+
+delimiter $$
+create event tryEvent
+  on schedule every 10 second
+do
+begin
+  insert into lab (data) values (unix_timestamp());
+end
+$$
+delimiter ;
+
+show events;
+
+select * from lab;
+
+drop event tryEvent;
+
+

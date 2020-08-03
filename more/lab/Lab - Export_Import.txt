@@ -1,0 +1,55 @@
+﻿use northwind;
+
+-- 匯出產品類別資料
+-- select categoryId, categoryName from categories;
+-- select categoryId, categoryName into outfile 'c:\\temp\\lab.txt' from categories;
+
+select categoryId, categoryName 
+  into outfile 'c:\\temp\\lab.txt' 
+  lines terminated by '\r\n'
+  from categories;
+
+-- 準備稍後練習匯入時會用到資料庫與資料表
+create database LabIO;
+use LabIO;
+drop table categories;
+create table categories
+(
+  CategoryID int(11) unique default 0,
+  CategoryName varchar(15)
+);
+
+-- 以記事本開啟 c:\temp\lab.txt, 
+-- 多複製兩行, 故意製造一些重複的類別編號
+
+-- 繼續執行下列指令,
+-- 特別觀察匯入時的各項數據報告, 例如:
+-- Records: 10  Deleted: 2  Skipped: 0  Warnings: 2
+
+load data infile 'c:\\temp\\lab.txt'
+  replace
+  into table categories
+  LINES TERMINATED BY '\r\n';
+  -- ignore 2 lines;
+
+select * from categories;
+
+
+-- 再試一次，這次使用 ignore 選項。
+-- 請特別觀察匯入時的各項數據報告。
+use LabIO;
+drop table categories;
+create table categories
+(
+  CategoryID int(11) unique default 0,
+  CategoryName varchar(15)
+);
+
+
+load data infile 'c:\\temp\\lab.txt'
+  ignore
+  into table categories
+  LINES TERMINATED BY '\r\n';
+
+select * from categories;
+

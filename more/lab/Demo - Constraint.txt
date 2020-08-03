@@ -1,0 +1,84 @@
+use test;
+
+drop table lab;
+
+create table lab 
+(
+  id int primary key,
+  data int
+);
+
+alter table lab
+  add constraint chk_lab_data
+    check (data >= 0);
+
+insert into lab values (1, 100);
+select * from lab;
+
+insert into lab values (2, -200);
+select * from lab;
+
+
+drop trigger if exists checkLabData;
+
+delimiter $$
+create trigger checkLabData
+  before insert on lab
+  for each row
+begin
+  if (new.data < 0) then
+    set new.data = 123;
+  end if;
+end;
+$$
+delimiter ;
+
+
+insert into lab values (3, -300);
+select * from lab;
+
+
+
+
+drop trigger if exists checkLabData;
+
+delimiter $$
+create trigger checkLabData
+  after insert on lab
+  for each row
+begin
+  if (new.data < 0) then
+    call usp_NotExistProc();
+  end if;
+end;
+$$
+delimiter ;
+
+insert into lab values (4, -400);
+select * from lab;
+
+
+
+
+-- Wrong:
+drop trigger if exists checkLabData;
+
+delimiter $$
+create trigger checkLabData
+  after insert on lab
+  for each row
+begin
+  if (new.data < 0) then
+    update lab set data = 0 where id = new.id;
+  end if;
+end;
+$$
+delimiter ;
+
+insert into lab values (5, -500);
+select * from lab;
+
+
+
+
+

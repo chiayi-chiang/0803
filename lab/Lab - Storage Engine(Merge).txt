@@ -1,0 +1,33 @@
+use test;
+
+drop table Lab;
+drop table t1;
+drop table t2;
+
+create table t1
+(
+  id int auto_increment primary key,
+  data varchar(5) not null
+) engine = MyISAM;
+
+create table t2
+(
+  id int auto_increment primary key,
+  data varchar(5) not null
+) engine = MyISAM;
+
+create table Lab
+(
+  id int auto_increment unique,
+  data varchar(5) not null
+) engine = Merge union = (t1, t2) insert_method = first;
+-- insert_method ¿ï¶µ: no | first | last
+
+insert into t1 (data) values ('t1');
+insert into t2 (data) values ('t2');
+insert into Lab (data) values ('rec3');
+insert into Lab (data) values ('rec4');
+
+select * from Lab;
+select * from t1;
+select * from t2;

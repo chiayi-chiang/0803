@@ -1,0 +1,134 @@
+﻿ 作者  TeemingVoid (TeemingVoid)
+ 標題  Re: [SQL ] mysql如何交集查詢條件?
+ 時間  Tue Jan 21 00:52:57 2014
+───────────────────────────────────────
+
+※ 引述《SonEat (善液)》之銘言：
+: table
+: ID          element
+: 1            Bi
+: 1            Na
+: 2            Bi
+: 2            Na
+: 2            O
+: 3            Bi
+: 3            C
+: 因為mysql沒有Intersection查詢的功能可用
+: 因此我的問題
+: 1. 我想查出至少包含Bi與Na的ID  也就是查詢結果為 1,2
+: 我原本用select * from table where element='Bi' and element='Na'結果會查出空
+集合
+: select * from table where element='Bi' or element='Na' 則會查出 1,2,3
+
+-- 依你提出的資料為例:
+use test;
+
+create table MoleculeElement
+(
+  MoleculeID int,
+  Element varchar(2)
+);
+
+insert into MoleculeElement values
+  (1,'Bi'),(1,'Na'),
+  (2,'Bi'),(2,'Na'),(2,'O'),
+  (3,'Bi'),(3,'C');
+
+
+-- 利用子查詢分別找出兩個元素的資料，再以 inner join 取交集
+-- 查出至少包含 Bi 與 Na 的 ID，也就是查詢結果為 1, 2
+select A.MoleculeID
+from (
+  select MoleculeID, Element from MoleculeElement where Element = 'Bi'
+) as A
+join (
+  select MoleculeID, Element from MoleculeElement where Element = 'Na'
+) as B
+on (A.MoleculeID = B.MoleculeID);
+
+
+: 2. 我想查出只有包含Bi與Na兩種元素的ID  也就是查詢結果為 1
+
+-- 繼續找出元素數量正好是二的分子，再取一次交集
+select MoleculeID
+from (
+  select MoleculeID, Element from MoleculeElement where Element = 'Bi'
+) as A
+join (
+  select MoleculeID, Element from MoleculeElement where Element = 'Na'
+) as B
+using (MoleculeID)
+join (
+  select MoleculeID from MoleculeElement
+  group by MoleculeID having count(*) = 2
+) as C
+using (MoleculeID)
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 114.38.74.223
+推 SonEat:兩個都成功了，非常感謝大大                               01/21 10:32
+
+
+ 作者  TeemingVoid (TeemingVoid)
+ 標題  Re: [SQL ] mysql如何交集查詢條件?
+ 時間  Tue Jan 21 22:39:26 2014
+───────────────────────────────────────
+
+※ 引述《SonEat (善液)》之銘言：
+: 再追加一個差集的問題
+: 我把原表再多一欄
+: table:MoleculeElement
+: MoleculeID          Element      Number
+: 1                     Bi          1
+: 1                     Na          3
+: 2                     Bi          1
+: 2                     Na          1
+: 2                     O           1
+: 3                     Bi          3
+: 3                     C           1
+: create table MoleculeElement
+: (
+:   MoleculeID int,
+:   Element varchar(2),
+:   Number int
+: );
+: insert into MoleculeElement values
+:   (1,'Bi',1),(1,'Na',3),
+:   (2,'Bi',1),(2,'Na',1),(2,'O',1),
+:   (3,'Bi',1),(3,'C',3);
+:
+: 我想查詢同時有Na與Bi的結果，也就是原問題1，再排除Na的Number=3的結果
+: 也就是查詢結果只得到 2
+
+select MoleculeID
+from (
+  select MoleculeID, Element from MoleculeElement where Element = 'Bi'
+) as A
+join (
+  select MoleculeID, Element from MoleculeElement where Element = 'Na'
+) as B
+using (MoleculeID)
+where MoleculeID not in (
+  select MoleculeID from MoleculeElement
+  where Element = 'Na' and Number = 3
+)
+
+-- 或者 --
+
+select MoleculeID
+from (
+  select MoleculeID, Element from MoleculeElement where Element = 'Bi'
+) as A
+join (
+  select MoleculeID, Element from MoleculeElement
+  where Element = 'Na' and Number <> 3
+) as B
+using (MoleculeID)
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 114.41.97.177
+推 SonEat:再次感謝大大指教                                         01/21 23:34
+
+

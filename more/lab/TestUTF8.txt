@@ -1,0 +1,16 @@
+
+CREATE TABLE ClubC
+(
+  ClubID CHAR(3) NOT NULL PRIMARY KEY,
+  ClubName VARCHAR(30) NULL,
+  ClubChineseName NVARCHAR(20) NULL
+) engine = MyISAM;
+
+
+LOAD DATA INFILE 'c:\\temp\\clubC.txt'
+  REPLACE
+  INTO TABLE ClubC
+  FIELDS TERMINATED BY ','
+  OPTIONALLY ENCLOSED BY '"'
+  LINES TERMINATED BY '\r\n'
+  ignore 1 lines;

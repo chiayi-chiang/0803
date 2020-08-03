@@ -1,0 +1,69 @@
+﻿
+__________________________________________________
+微軟 SQL Server 2008
+
+查詢目前連線編號:
+select @@SPID
+
+查詢連線清單:
+exec sp_who
+
+查詢鎖定資訊:
+select * from sys.dm_tran_locks
+
+踢掉一個連線Session:
+kill 連線編號，例如:
+kill 55
+
+
+
+
+
+__________________________________________________
+MySQL
+
+查詢目前連線編號:
+status;
+
+查詢連線清單:
+show processlist;
+
+查詢 Table lock 的鎖定資訊:
+c:\>mysqladmin debug
+-- MySqlAdmin 會將資料表的鎖定資訊寫到一個除錯檔，除錯檔案的檔名
+-- 請查系統變數 log_error:
+SHOW VARIABLES LIKE 'log_error';
+
+
+踢掉一個連線Session:
+kill 連線編號，例如:
+kill 3
+
+
+
+
+__________________________________________________
+Oracle
+
+查詢目前連線編號:
+select sid, serial# from v$session where audsid = sys_context('userenv', 'sessionid');
+
+查詢連線清單:
+select * from v$session;
+
+
+查詢鎖定資訊:
+select s.sid,
+  s.serial#,
+  lo.oracle_username,
+  lo.os_user_name,
+  ao.object_name,
+  lo.locked_mode
+from v$locked_object lo, dba_objects ao, v$session s
+where ao.object_id = lo.object_id and lo.session_id = s.sid;
+
+踢掉一個連線Session:
+-- alter system kill session 'sid,serial#' immediate;  例如:
+-- alter system kill session '154,56090' immediate;
+
+

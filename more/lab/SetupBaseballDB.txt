@@ -1,0 +1,43 @@
+-- Setup Baseball odds database (2009 season)
+
+CREATE DATABASE BaseballDB;
+
+USE BaseballDB;
+
+CREATE TABLE Club
+(
+  ClubID CHAR(3) NOT NULL PRIMARY KEY,
+  ClubName VARCHAR(30) NULL
+) engine = MyISAM;
+
+CREATE TABLE Odds
+(
+  OddsID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  GameDate DATETIME NOT NULL,
+  MatchNum CHAR(4) NOT NULL,
+  AwayTeamID CHAR(3) NOT NULL, 
+  HomeTeamID CHAR(3) NOT NULL,
+  AwayScore INT NOT NULL,
+  HomeScore INT NOT NULL,
+  AwayMoneylineOdd Decimal(4, 2) NOT NULL,
+  HomeMoneylineOdd Decimal(4, 2) NOT NULL,
+  AwayRunlineOdd Decimal(4, 2) NOT NULL,
+  HomeRunlineOdd Decimal(4, 2) NOT NULL,
+  WhichTeamMustWin2Run CHAR(4) NOT NULL,
+  OverUnderLevel Decimal(4, 1) NOT NULL,
+  OverOdd Decimal(4, 2) NOT NULL,
+  UnderOdd Decimal(4, 2) NOT NULL
+) engine = MyISAM;
+
+LOAD DATA INFILE 'c:\\Lab\\club.txt'
+  REPLACE
+  INTO TABLE Club
+  FIELDS TERMINATED BY ','
+  LINES TERMINATED BY '\r\n';
+
+LOAD DATA INFILE 'c:\\Lab\\odds.txt'
+  REPLACE
+  INTO TABLE Odds
+  FIELDS TERMINATED BY ','
+  LINES TERMINATED BY '\r\n';
+

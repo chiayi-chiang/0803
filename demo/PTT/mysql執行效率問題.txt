@@ -1,0 +1,60 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [SQL ] mysql執行效率問題
+ 時間  Fri Dec 30 19:00:12 2011
+───────────────────────────────────────
+
+※ 引述《RedMapleWing (闇夜 楓)》之銘言：
+: 我有一段sql碼是這樣
+: SELECT a . * , b . * , c . *
+: FROM comp_main AS a, comp_contact AS b, comp_index AS c
+: WHERE a.briefIntro LIKE  '%led%'
+: AND b.main_sn = a.sn
+: AND a.sn = c.comp
+: AND (
+: c.rank =  '3'
+: OR c.rank =  '4'
+: )
+: ORDER BY c.rank ASC
+: LIMIT 0 , 10
+: ...
+: 本來在公司網站內部資料不多的時候撈都沒什麼問題
+: 但近日新增了近2萬筆資料進去
+: ...
+: 實測後發現是這段程式碼餵給mysql後需要的執行時間非常的久
+
+針對您的 SQL 敘述，我有以下建議，提供給您參考:  :)
+
+1. 利用 EXPLAIN 看看 MySQL 的執行計畫，例如:
+   mysql> EXPLAIN SELECT * FROM ... \G
+   請特別留意 type, possible_keys, key 這三項的內容，檢討索引的使用情況。
+
+2. 閱讀您的 SQL 敘述時，我第一個留意到的是 a.briefIntro LIKE '%led%'。
+   在 %關鍵字% 的搜尋方式下，任何 SQL-based 的伺服器都將無可避免地必須進行
+   Table Scan（也就是每一筆全部找一遍），而且，您的 where 條件中，除了 join
+   條件式之外，沒有任何的條件式可以幫忙縮小範圍，因此，我推測 MySQL 真的只能
+   一筆接著一筆從頭找到尾了，而你的資料量又已達一定程度，於是....
+
+   所以，我的建議是: 看看能不能針對 comp_main 那個資料表加上另一個條件，協
+   助縮小範圍。
+
+3. 編製全文檢索索引。針對 briefIntro 欄位進行全文檢索，協助進行
+   LIKE '%led%' 搜尋。不過，有個前提：你 Table 的 Engine 必須使用 MyISAM。
+
+編製全文檢索索引的語法示範：
+CREATE TABLE comp_main (..., briefIntro CHAR(40),
+  FULLTEXT (briefIntro))
+  engine = MyISAM;
+-- 或者
+ALTER TABLE comp_main ADD FULLTEXT ft_briefIntro (briefIntro);
+-- 或者
+CREATE FULLTEXT INDEX ft_briefIntro comp_main (briefIntro);
+
+
+編好之後，查詢資料的語法：
+SELECT * FROM comp_main WHERE MATCH(briefIntro) AGAINST('led');
+
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 114.41.96.244
+推 RedMapleWing:非常感謝你                                         12/31 17:43

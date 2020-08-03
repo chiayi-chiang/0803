@@ -1,0 +1,116 @@
+use test;
+
+
+
+
+// declare 
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  declare x int;
+  select x;
+end
+$$
+delimiter ;
+
+call usp_test();
+
+
+
+
+// declare with default value
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  declare x int default 0;
+  select x;
+end
+$$
+delimiter ;
+
+call usp_test();
+
+
+
+
+// set variable value (1)
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  declare x int default 0;
+  set x = 100;
+  select x;
+end
+$$
+delimiter ;
+
+call usp_test();
+
+
+
+
+// set variable value (2)
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  declare x int default 0;
+  select 110 into x;
+  select x;
+end
+$$
+delimiter ;
+
+call usp_test();
+
+
+
+
+// set variable value (3)
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  declare x int default 0;
+  select count(*) from mysql.user into x;
+  select x;
+end
+$$
+delimiter ;
+
+call usp_test();
+
+
+
+
+// set variable value (4)
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  declare userCount int default 0;
+  declare currentTime datetime;
+  select current_date(), count(*) from mysql.user into currentTime, userCount;
+  select currentTime, userCount;
+end
+$$
+delimiter ;
+
+call usp_test();
+
+

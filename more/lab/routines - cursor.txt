@@ -1,0 +1,33 @@
+﻿-- 為何無法建立以下的預存程序?
+-- 想想看, 雖然 select max(UnitPrice) from products 也可得到
+-- 相同的結果, cursor 逐筆逐筆處理的特性, 適用於哪些情境?
+ 
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `northwind`.`usp_cursor` $$
+CREATE PROCEDURE `northwind`.`usp_cursor` ()
+BEGIN
+  declare prods cursor for select ProductID, UnitPrice from products;
+  declare iProductID int default 0;
+  declare iUnitPrice int default 0;
+  declare iMaxPrice int default 0;
+  declare iDone int default 0;
+  declare continue handler for not found set iDone = 1;
+
+  open prods;
+  oneByone: loop
+    fetch prods into iProductID, iUnitPrice;
+    if iDone = 1 then
+      leave oneByone;
+    end if;
+    if iUnitPrice > iMaxPrice then
+      set iMaxPrice = iUnitPrice;
+    end if;
+  end loop;
+
+  select 'Max price is', iMaxPrice;
+END $$
+
+DELIMITER ;
+
+-- call northwind.usp_cursor();

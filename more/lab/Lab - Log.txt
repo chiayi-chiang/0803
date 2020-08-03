@@ -1,0 +1,20 @@
+﻿1. 修改 my.cnf 設定檔，在 [mysqld] 一節加寫三行 Log 設定，如下:
+[mysqld]
+log
+log-bin=norysoda
+log-slow-queries
+
+2. 重新啟動 MySQL 服務
+mysql-ctl stop
+mysql-ctl start
+
+3. 嘗試一些 SQL 指令(select, update...)。
+
+4. 停止 MySQL 服務
+
+5. 利用 mysqlbinlog 將 binary log (以本例來說: norysoda.000001) 轉成文字檔 
+shell>mysqlbinlog <路徑>norysoda.000001 > /tmp/binlog.txt
+
+6. 檢視 /tmp/binlog.txt 的內容。
+
+

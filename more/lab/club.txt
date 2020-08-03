@@ -1,0 +1,30 @@
+ARI,Diamondbacks
+ATL,Braves
+BAL,Orioles
+BOS,Red Sox
+CHC,Cubs
+CIN,Reds
+CLE,Indians
+COL,Rockies
+CWS,White Sox
+DET,Tigers
+FLA,Marlins
+HOU,Astros
+KC ,Royals
+LAA,Angels
+LAD,Dodgers
+MIL,Brewers
+MIN,Twins
+NYM,Mets
+NYY,Yankees
+OAK,Athletics
+PHI,Phillies
+PIT,Pirates
+SD ,Padres
+SEA,Mariners
+SF ,Giants
+STL,Cardinals
+TB ,Rays
+TEX,Rangers
+TOR,Blue Jays
+WSH,Nationals

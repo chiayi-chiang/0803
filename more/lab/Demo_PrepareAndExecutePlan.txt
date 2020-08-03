@@ -1,0 +1,176 @@
+use test;
+
+drop table t1;
+drop table t2;
+drop table t3;
+
+create table t1 (id int primary key, data int);
+create table t2 (id int primary key, data int);
+create table t3 (id int primary key, data int);
+
+drop table work;
+create table work (data varchar(255));
+insert into work values ('13');
+
+insert into t1 values (101, 1001);
+insert into t1 values (102, 1002);
+insert into t1 values (103, 1003);
+
+insert into t2 values (201, 2001);
+insert into t2 values (202, 2002);
+insert into t2 values (203, 2003);
+
+insert into t3 values (301, 3001);
+insert into t3 values (302, 3002);
+insert into t3 values (303, 3003);
+
+select * from t1
+union
+select * from t2
+union
+select * from t3
+;
+
+
+select * from t1
+union
+select * from t3
+;
+
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  declare cmd varchar(255) default '';
+  set cmd = concat(cmd, 'select 1 + 1');
+  set cmd = concat(cmd, ' + 1');
+  set @x = cmd;
+  prepare plan from @x;
+  execute plan;
+  deallocate prepare plan;
+end
+$$
+delimiter ;
+
+call usp_test();
+
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  declare cmd varchar(255) default '';
+  declare workData varchar(255) default '';
+  
+  select data from work into workData;
+  select workData;
+
+end
+$$
+delimiter ;
+
+call usp_test();
+
+
+
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  declare cmd varchar(255) default '';
+  declare workData varchar(255) default '';
+  declare i int default 1;
+  
+  select data from work into workData;
+  while (i <= length(workData)) do
+    set cmd = concat (cmd, 
+      'select * from t', 
+      substr(workData, i, 1));
+    set i = i + 1;
+  end while;
+
+  select cmd;
+
+end
+$$
+delimiter ;
+
+call usp_test();
+
+
+
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  declare cmd varchar(255) default '';
+  declare workData varchar(255) default '';
+  declare i int default 1;
+  
+  select data from work into workData;
+  while (i <= length(workData)) do
+    if (length(cmd) > 0) then
+      set cmd = concat (cmd, ' union ');
+    end if;
+    set cmd = concat (cmd, 'select * from t', substr(workData, i, 1));
+    set i = i + 1;
+  end while;
+
+  select cmd;
+  
+end
+$$
+delimiter ;
+
+call usp_test();
+
+
+
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  declare cmd varchar(255) default '';
+  declare workData varchar(255) default '';
+  declare i int default 1;
+  
+  select data from work into workData;
+  while (i <= length(workData)) do
+    if (length(cmd) > 0) then
+      set cmd = concat (cmd, ' union ');
+    end if;
+    set cmd = concat (cmd, 'select * from t', substr(workData, i, 1));
+    set i = i + 1;
+  end while;
+
+  set @x = cmd;
+  prepare plan from @x;
+  execute plan;
+  deallocate prepare plan;
+  
+end
+$$
+delimiter ;
+
+
+
+select * from work;
+call usp_test();
+
+update work set data = '12';
+call usp_test();
+
+update work set data = '23';
+call usp_test();
+
+
+

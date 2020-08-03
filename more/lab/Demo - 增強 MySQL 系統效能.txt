@@ -1,0 +1,79 @@
+﻿增強 MySQL 系統效能的建議作法:
+
+- 適當地使用索引。
+
+- 特別留意用來進行 JOIN 運算的欄位，針對外鍵編製索引
+  協助資料配對合併。
+
+- 使用夠用且夠短的欄位型別，較短的型別佔用較少的資源，
+  相對會比較快。例如：char(3)比char(30)佔用較少的硬
+  碟、記憶體與網路頻寬，而且，char(3)進行資料比對的
+  時間也比較少。
+
+- 以 PROCEDURE ANALYSE() 分析資料內容。
+  SELECT * FROM CountryLanguage PROCEDURE ANALYSE(10,256)\G
+
+- 將資料儘可能定義成 NOT NULL。
+
+- 適當地進行「正規化」(Normalize)設計。
+
+- 使用適合的異動隔離等級(transaction isolation level)。
+
+- 使用摘要表格(summary tables)。
+
+- 啟用並且監看快取(cache)的使用情形。
+
+
+
+啟用快取(cache)。
+
+________________________________________
+table_cache
+如果 Open_tables 的值一直很接近 table_cache 的值，而且 
+Opened_tables 持續增加，表示資料表快取的設定值不夠，使得系統
+要一再地關閉資料表才能騰挪出快取空間來開啟其他資料表。
+
+
+________________________________________
+MyISAM Key Cache
+key_buffer_size 主控 MyISAM 索引內容的快取量。
+建議讓 Key_reads / Key_read_requests 這項比值愈低愈好。例如:
+mysql> SHOW STATUS LIKE 'Key_read%';
++-------------------+----------+
+| Variable_name     | Value    |
++-------------------+----------+
+| Key_read_requests | 73137065 |
+| Key_reads         | 2069133  | (沒有快取，得從 .MYI 讀索引)
++-------------------+----------+
+以上述資料來看，cache miss rate 是 0.0283，相對來說，有 97%
+的機率可以從快取找到索引區塊。
+miss rate = 2069133 / 73137065 = .0283
+efficiency = 1 - (2069133 / 73137065) = .9717
+
+
+InnoDB 則是使用以下項設計值控制快取量:
+innodb_buffer_pool_size
+innodb_log_buffer_size
+
+
+________________________________________
+Query Cache
+
+- 直接將 Select 的結果快取下來以備後續使用。
+
+- MySQL 在比對 select 敘述時，大寫小寫是有差別的。
+
+- 與 Query Cache 有關的系統變數:
+mysql> SHOW VARIABLES LIKE 'query_cache%';
+query_cache_type: OFF表示停用快取，ON 表示啟用，
+                  DEMAND則視指令有沒有加註 SQL_CACHE 而定。
+                  (SELECT SQL_CACHE 欄位... FROM 資料表)
+[mysqld]
+# 0 for OFF, 1 for ON, and 2 DEMAND.
+query_cache_type = 1
+query_cache_size = 10M
+query_cache_limit = 2M
+
+此外，執行指令時，也可快註 SQL_NO_CACHE 聲明不要快取:
+SELECT SQL_NO_CACHE ... FROM inventory ... ;
+

@@ -1,0 +1,19 @@
+mysqldump -u root -pPa$$w0rd northwind customers > c:\lab\bak.sql
+
+lock tables customers read, products read;
+lock tables customers read, products write;  -- if another client lock write, mysqldump will wait him to unlock.
+
+-- use another user, login and try to select / update customers;
+
+unlock tables;
+
+
+mysqldump -u root -pPa$$w0rd --database northwind mysql > c:\lab\bak.sql
+
+mysqldump -u root -pPa$$w0rd --database northwind > c:\lab\bak.sql
+
+mysqldump -u root -pPa$$w0rd northwind > c:\lab\bak.sql
+
+mysqldump -u root -pPa$$w0rd --flush-logs northwind customers > c:\lab\bak.sql
+
+mysqldump --single-transaction --all-databases > backup_sunday_1_PM.sql

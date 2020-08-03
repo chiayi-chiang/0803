@@ -1,0 +1,17 @@
+use test;
+
+drop table Lab;
+
+create table Lab
+(
+  id int auto_increment primary key,
+  data set('reading', 'music', 'sport') not null
+);
+
+insert into Lab (data) values ('reading,sport');
+insert into Lab (data) values ('sport,reading,music');
+insert into Lab (data) values ('music,reading');
+
+select * from Lab;
+select * from Lab where find_in_set('music', data);
+

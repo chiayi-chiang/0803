@@ -1,0 +1,91 @@
+use test;
+
+
+
+
+// if true/false then
+// ...
+// end if;
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test (x int) 
+begin
+  if x > 0 then
+    select x;
+    select 'x greater than zero.';
+  end if;
+end
+$$
+delimiter ;
+
+call usp_test(3);
+
+
+
+
+// (A) if ... else ...
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test (x int) 
+begin
+  if x > 0 then
+    select 'x greater than zero.';
+  else
+    select 'x less or equal to zero.';
+  end if;
+end
+$$
+delimiter ;
+
+call usp_test(3);
+
+
+
+
+// (B) if ... else ...
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test (x int) 
+begin
+  if x > 0 then
+    select x;
+    select 'x greater than zero.';
+  else
+    select 'x less or equal to zero.';
+  end if;
+end
+$$
+delimiter ;
+
+call usp_test(3);
+
+
+
+
+
+// (C) if ... else ...
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test (x int) 
+begin
+  if x > 0 then
+  begin
+    select x;
+    select 'x greater than zero.';
+  end;
+  else
+    select 'x less or equal to zero.';
+  end if;
+end
+$$
+delimiter ;
+
+

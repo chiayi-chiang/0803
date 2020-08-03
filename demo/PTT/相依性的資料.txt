@@ -1,0 +1,56 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [SQL ] 相依性的資料
+ 時間  Fri Feb 24 00:02:50 2012
+───────────────────────────────────────
+
+※ 引述《Ting1024 (無)》之銘言：
+:         問題有點小複雜
+:         假設TABLE A有兩個欄位
+:         廠商            協力廠商
+:         ComA            ComC
+:         ComB            ComZ
+:         ComC            ComA
+:         現在問題是 ComA的協力廠商是 ComC
+:               恰好 ComC的協力廠商是 ComA
+:         要怎麼用SQL指令，找出這種互為協力廠商的資料列?
+:         或者資料表應該怎麼規劃才容易搭配SQL找出來呢?
+:         目前我只能想到寫程式，針對廠商欄位一列一列去找 ><
+
+是像這樣的結果嗎? :)
+
+use test
+go
+
+create table TableA
+(
+  id int primary key,
+  Party varchar(10),
+  ThirdParty varchar(10)
+)
+go
+
+insert into TableA values (1, 'ComA', 'ComC')
+insert into TableA values (2, 'ComB', 'ComZ')
+insert into TableA values (3, 'ComC', 'ComA')
+insert into TableA values (4, 'ComA', 'ComD')
+insert into TableA values (5, 'ComD', 'ComA')
+go
+
+select L.*
+  from TableA L join TableA R
+  on (R.ThirdParty = L.Party and R.Party = L.ThirdParty and R.id > L.id)
+
+id          Party      ThirdParty
+----------- ---------- ----------
+1           ComA       ComC
+4           ComA       ComD
+
+(2 row(s) affected)
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 114.38.87.87
+推 Ting1024:感謝T大的指導，正確無誤。好久沒用，都忘了表格可以      02/24 01:12
+→ Ting1024:join 自己本身....(糗 > < )                             02/24 01:12
+→ TeemingVoid:不客氣 ^^                                           02/24 01:29
+推 hukhuk:讚                                                       02/24 01:31

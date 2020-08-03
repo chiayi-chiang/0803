@@ -1,0 +1,56 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [SQL ] mysql ON DUPLICATE KEY UPDATE
+ 時間  Thu Jul 26 23:05:44 2012
+───────────────────────────────────────
+
+※ 引述《piglon (TEST123)》之銘言：
+: 想請教 ON DUPLICATE KEY UPDATE 用法的問題
+: 我有一個臨時表內的資料要寫入資料表
+: 希望可以達到存在就更新不存在就新增
+: 但我看不懂 範例的內容
+: INSERT [LOW_PRIORITY | HIGH_PRIORITY] [IGNORE]
+:     [INTO] tbl_name [(col_name,...)]
+:     SELECT ...
+:     [ ON DUPLICATE KEY UPDATE col_name=expr, ... ]
+: 我寫的語法一直出錯
+: insert into table (a,b,c,d)
+:    select a,b,c,d from tmp_table
+:    ON DUPLICATE KEY UPDATE
+: 不知道我哪邊有問題呢?
+
+請改成這樣:
+insert into table (a,b,c,d)
+   select a,b,c,d from tmp_table t
+   ON DUPLICATE KEY UPDATE a=t.a, b=t.b, c=t.c, d=t.d
+
+1. 針對來源資料表給個別名
+
+2. 新增...當鍵值重複時，修改 a = 別名.a, ....
+
+
+更詳細的例子:
+
+use test;
+
+create table lab (id int primary key, data1 int, data2 int);
+insert into lab values (3, 30, 300);
+
+-- 單筆的寫法
+insert into lab values (3, 33, 333)
+  on duplicate key update data1 = 32, data2 = 302;
+
+create table labTemp (id int primary key, data1 int, data2 int);
+
+insert into labTemp values (1, 11, 101);
+insert into labTemp values (2, 21, 202);
+insert into labTemp values (3, 31, 303);
+
+-- 整批匯入的寫法
+insert into lab
+  select id, data1, data2 from labTemp t
+  on duplicate key update data1 = t.data1, data2 = t.data2;
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 114.41.100.183
+推 piglon:感謝你! 可以過了!! 謝謝!謝謝!                            07/27 13:02

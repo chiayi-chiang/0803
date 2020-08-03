@@ -1,0 +1,50 @@
+use test;
+
+drop table lab;
+
+create table lab
+(
+  id int primary key,
+  data int
+);
+
+insert into lab values (1, 11),(2, 22),(3, 33), (4, 10), (5, 5);
+
+select * from lab order by id;
+
+
+
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `test`.`usp_test` $$
+CREATE PROCEDURE `test`.`usp_test` ()
+BEGIN
+
+  declare iId int default 0;
+  declare iData int default 0;
+  declare total int default 0;
+  declare iDone int default 0;
+  declare iTotal int default 0;
+  declare cur cursor for select id, data from lab order by id;
+  declare continue handler for not found set iDone = 1;
+
+  drop table if exists result;
+  create temporary table result select *, 0 as cData from lab where 1 = 0;
+  
+  open cur;
+  fetch cur into iId, iData;
+  while (iDone = 0) do
+    set iTotal = iTotal + iData;
+    insert into result values (iId, iData, iTotal);
+    fetch cur into iId, iData;
+  end while;
+
+  select * from result;
+  drop table result;
+END $$
+
+DELIMITER ;
+
+call usp_test();
+

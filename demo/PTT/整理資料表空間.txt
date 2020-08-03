@@ -1,0 +1,35 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [SQL ] 整理資料表空間
+ 時間  Tue Aug 28 15:23:00 2012
+───────────────────────────────────────
+
+※ 引述《carlsiu (Carl Siu)》之銘言：
+: 在 MySQL 的資料表中，刪除一些紀錄後，資料表所佔的空間不會變小，但只要下一道
+: optimize tablename  便可去除多餘的空間。
+: 請問在 MS SQL 中，也有相對應的指令嗎?謝謝。
+
+首先，optimize table 的作用主要不在於縮減空間，而是在於儲存空間整理、
+索引重整、索引統計更新等等的最佳化處理。
+
+其次，MySQL 也不是全部的 Storage Engine 都會在 optimize table 之後釋出
+儲存空間。
+
+最後，釋出空間給作業系統，不一定是好事。因為，資料如果曾經那麼多，檔案
+後來還是可能會那麼大，於是，後來一次一次追加空間的結果，資料檔反而在磁
+軌上形成多個段落，使得磁碟讀寫不如一整段來得順暢。總之，空間利用的最適
+化是 optimize table 的重點，釋出空間是後續連帶的可能結果。
+
+
+至於 SQL Server 的相對指令，如果單指空間重整並釋出空間，可用:
+
+* DBCC SHRINKDATABASE
+* DBCC SHRINKFILE
+
+索引的重整，請用 ALTER INDEX ... REBUILD 指令，並且排定時間定期維護。
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 114.41.107.99
+推 carlsiu:謝謝你的詳細解說。因express版有10G的限制，才這樣會關    08/29 13:47
+→ carlsiu:心使用空間的問題。                                      08/29 13:48
+→ TeemingVoid:不客氣 ^^ 有道理，Express 版的確要留意 10G 限制。   08/29 16:05

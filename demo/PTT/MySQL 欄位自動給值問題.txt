@@ -1,0 +1,69 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [SQL ] MySQL 欄位自動給值問題
+ 時間  Sun Sep  2 00:50:43 2012
+───────────────────────────────────────
+
+※ 引述《herman602 (奸商)》之銘言：
+: 我現在資料表中有個欄位叫做id
+: 是AUTO_INCREMENT的
+: 我想新增一個欄位叫做SORT
+: 然後新增的時候就自動把值設成跟ID一樣
+: 請問要怎麼做呢
+
+我的作法比較麻煩一點，而且因為使用到 Trigger 的緣故，限定在 MySQL 5.x
+版之後才能執行。
+
+首先，準備一個給號表（它的任務有一點點像 Oracle 的 Sequence 物件），該
+資料表有一個 AUTO_INCREMENT 欄位，在我們在新增資料之後，可透過 MySQL 的
+LAST_INSERT_ID() 查出新的序號是多少。
+
+其次，針對我們的目標資料表，寫一個 BEFORE 型的 Trigger，邏輯大致上是:
+1. 在 Trigger 新增一筆資料到給號表。
+2. 查出 LAST_INSERT_ID() 的值。
+3. 將上個步驟的序號指定給 NEW.id 與 MEW.sort 欄位。
+   <Note> NEW 物件，指的是觸發新增 Trigger 的那筆記錄。
+
+
+實際寫法請參酌下列這段實驗程式:
+
+use test;
+
+create table labSequence
+(
+  num int auto_increment, primary key (num)
+) auto_increment = 1;
+
+
+create table lab
+(
+  id int auto_increment,
+  data int,
+  sort int,
+  primary key (id)
+);
+
+drop trigger if exists SetSortValueOnLabInsert;
+
+delimiter $$
+create trigger SetSortValueOnLabInsert
+  before insert on lab
+  for each row
+begin
+  insert into labSequence values (null);
+  set NEW.id = last_insert_id();
+  set NEW.sort = last_insert_id();
+end;
+$$
+delimiter ;
+
+insert into lab (data) values (100);
+insert into lab (data) values (200);
+insert into lab (data) values (300);
+
+select * from lab;
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 118.170.134.7
+推 herman602:感謝! 我來試試看!                                     09/02 00:53
+推 herman602:感謝! 的確可以! 謝謝!                                 09/04 18:56

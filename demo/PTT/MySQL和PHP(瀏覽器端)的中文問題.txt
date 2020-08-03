@@ -1,0 +1,63 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [問題] MySQL和PHP(瀏覽器端)的中文問題
+ 時間  Thu Mar 29 02:28:09 2012
+───────────────────────────────────────
+
+※ 引述《ontario (蟄)》之銘言：
+: ...
+: [我的環境]
+: O/S: Win 7 (64-bit)
+: MySQL: MySQL Server 5.5.20
+: Apache: 2.2.22
+: 鍵入 status 後，得到顯示
+: Server characterset:    latin1
+: Db     characterset:    latin1
+: Client characterset:    utf8
+: Conn.  characterset:    utf8
+: [我的 my.ini 設定]
+: # SERVER SECTION
+: [mysqld]
+: default-character-set=utf8
+
+: 問題1. 一直無法在 status 下看到 Server 和 DB 的 characterset 為 utf8，哪裡
+:        少設了嗎？
+
+內容看起來沒有問題，但是有沒有可能弄錯設定檔名? :-)
+
+請利用「開始 | 執行」，輸入 services.msc 。查一下 MySQL 服務的設定，看看
+mysqld 的 --defaults-file 選項指定的 my.ini (或my.cfg) 在哪裏。
+
+
+: 問題2. 嘗試用 SET NAMES utf8; ，可是沒有用。
+: 問題3. 執行 show create database dbname; --> database 是 utf8
+:        執行 show create table tb; --> table 是 utf8
+:        執行 insert into tb (name) values ('中文'); 卻得到下面的 errmsg
+:        ERROR 1366 (HY000): Incorrect string value: '\xA4\xA4\xA4\xE5' for co
+lumn
+:        'name' at row 1
+:        為什麼不能輸入到 tb 裏頭呢？
+
+這不是您的錯，要怪繁體中文系統的「命令提示字元」支援的字碼頁是 950，
+也就是 Big5。我建議您改用例如 SQLyog 這類支援 UniCode 的 Client。
+
+如果一定要在「命令提示字元」直接輸入中文，也是有解啦:
+
+mysql -uroot -p
+show variables like 'char%';
+set character_set_client=big5;
+set character_set_results=big5;
+
+set character_set_client=big5 是告訴 MySQL 我們這個 session 會跟他講
+「台灣話」，如此，含有中文的 insert 指令就會成功了（字元會轉成 utf8
+儲存到資料表）。
+
+不過，雖然資料庫存的是 utf8 編碼，但是繁體中文系統的「命令提示字元」
+還是只聽得懂「台灣話」，所以，還要告訴 MySQL 將結果集轉成 big5 之後
+再傳出來（set character_set_results=big5）。
+
+可惜的是，即使如此，遇到「許功蓋」等著名字元，「命令提示字元」還是會
+卡住的，所以，還是建議您使用支援 UniCode 的 Client 軟體。
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 114.38.70.99

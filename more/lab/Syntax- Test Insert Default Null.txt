@@ -1,0 +1,31 @@
+use test;
+
+drop table insertLab;
+
+create table insertLab
+(
+  a int not null unique,
+  b int not null default 100,
+  c int not null,
+  d int null default 300,
+  e int null
+);
+
+
+insert into insertLab (a, b, c, d, e) values (1, 101, 201, 301, 401);
+
+-- b not null ==>error
+-- insert into insertLab (a, b, c, d, e) values (2, null, 202, 302, 402);
+insert into insertLab (a, c, d, e) values (2, 202, 302, 402);
+
+-- insert into insertLab (a, c, d, e) values (3, 203, null, 403);
+-- insert into insertLab (a, c, e) values (3, 203, 403);
+-- insert into insertLab (a, c, d, e) values (3, 203, null, 403);
+insert into insertLab (a, c, e) values (3, 203, 403);
+
+
+insert into insertLab (a, b, c, d, e) values (4, '4' , 204, 304, 404);
+insert into insertLab (a, b, c, d, e) values (5, 'abc' , 205, 305, 405);
+
+
+select * from insertLab;

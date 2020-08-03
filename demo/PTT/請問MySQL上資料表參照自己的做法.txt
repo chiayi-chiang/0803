@@ -1,0 +1,73 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [SQL ] 請問MySQL上資料表參照自己的做法...
+ 時間  Wed Jul  4 15:23:52 2012
+───────────────────────────────────────
+
+※ 引述《spiderman007 (千里之外)》之銘言：
+: 小弟想練習題目...資料表如下...
+: ...
+: (1) 新增資料時...會出現錯誤??
+: http://ppt.cc/O0sV
+
+OK, 以您的例子來說:
+
+create table employee
+(
+  ename char(10),
+  ssn int,
+  sex char(1),
+  salary int,
+  super_ssn int,
+  dno int,
+  primary key (ssn),
+  foreign key (super_ssn) references employee (ssn)
+) engine = innodb;
+
+-- 這樣子新增資料會有錯誤:
+insert into employee (ename, ssn, sex, salary, super_ssn, dno)
+  values ('Jeter', 1, 'M', 50000, null, 1);
+
+-- 可以考慮改成這樣: (主管的資料新增時先參考自己, 再修改成 null)
+insert into employee (ename, ssn, sex, salary, super_ssn, dno)
+  values ('Jeter', 1, 'M', 50000, 1, 1);
+
+update employee set super_ssn = null where ssn = 1;
+
+-- 然後，其他的資料可以正常參用 ssn = 1 主管的那筆:
+insert into employee (ename, ssn, sex, salary, super_ssn, dno)
+  values ('Kathy', 2, 'F', 50000, 1, 1);
+
+insert into employee (ename, ssn, sex, salary, super_ssn, dno)
+  values ('Carl', 3, 'M', 50000, 1, 1);
+
+select * from employee;
+
+
+: (2)對於參照的疑問??
+: 由於我的dno是部門的primary key，但我並沒有先建立department這個資料表
+: 那該如何修改employee的dno去參照department呢??
+: 我試過
+: alter table employee
+:    alter foreign key(dno) references department(dnumber);
+: 但似乎錯很大....
+
+-- 繼續以我們的例子來說明:
+
+create table department
+(
+  departmentID int,
+  deptName varchar(20),
+  primary key (departmentID)
+) engine = InnoDB;
+
+insert into department values (1, 'Accounting');
+insert into department values (2, 'R&D');
+
+alter table employee
+  add constraint FK_dept_employee
+  foreign key (dno) references department (departmentID);
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 112.104.67.251
+推 spiderman007:謝謝大大...                                        07/04 20:51

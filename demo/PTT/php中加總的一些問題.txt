@@ -1,0 +1,68 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [SQL ] php中加總的一些問題
+ 時間  Tue Aug 21 20:06:47 2012
+───────────────────────────────────────
+
+※ 引述《raindays035 (等待 是一種過程)》之銘言：
+: 在php提取資料庫資料中遇到一些問題
+: 大致上資料表如下：
+: ID      帳號    活動    餘額
+: 1       abc     A       10000
+: 2       abc     A       3000
+: 3       abc     A       2000
+: 4       def     A       4000
+: 5       def     A       1000
+: 6       def     A       2000
+: 7       abc     B       4000
+: 8       def     B       2000
+: 現在想要取得活動A中 各個帳戶的最後餘額總額
+: 即 ID = 3,ID = 6 的餘額:2000 + 2000 ＝ 4000
+
+推 ShangTang:用一個變數判別帳戶，然後每個帳戶都用陣列的一個位置如  08/21 18:52
+→ ShangTang:何？                                                  08/21 18:53
+→ raindays035:感謝樓上 我想到方法了 我在while前面放一個$i=0       08/21 19:08
+→ raindays035:while裡面放$i=$i+$ans[0] 最後印出$i就可以了         08/21 19:10
+
+很開心解決了! :-)
+
+謹提供一個比較偏資料庫的作法:
+(以 MySQL + PHP 舉例)
+
+use test;
+create table lab (id int, account varchar(10), action varchar(3), balance
+int);
+insert into lab values
+(1, 'abc', 'A', 10000),
+(2, 'abc', 'A', 3000),
+(3, 'abc', 'A', 2000),
+(4, 'def', 'A', 4000),
+(5, 'def', 'A', 1000),
+(6, 'def', 'A', 2000),
+(7, 'abc', 'B', 4000),
+(8, 'def', 'B', 2000);
+
+於是，您的 PHP 程式就類似這樣:
+
+<?php
+$action = "A";
+
+$con = mysql_connect("localhost", "root", "password") or die(mysql_error());
+mysql_selectdb("test", $con);
+$command = <<<MultiLines
+  select sum(balance) as total
+  from lab as t
+  where id = (select max(id)
+            from lab where account = t.account and action = '$action');
+MultiLines;
+$result = mysql_query($command);
+$row = mysql_fetch_array($result);
+printf("Total: %s", $row["total"]);
+
+mysql_free_result($result);
+mysql_close($con);
+?>
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 114.38.81.113
+推 raindays035:感謝T大，抱歉現在才看到 ＝ ＝                       09/01 15:21

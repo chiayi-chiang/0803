@@ -1,0 +1,28 @@
+// delimiter 
+
+use test;
+
+delimiter $$
+
+select version()$$
+
+delimiter ;
+
+
+
+
+// batch ( procedure / function / trigger )
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test () 
+begin
+  select current_date();
+  select current_timestamp();
+end
+$$
+delimiter ;
+
+call usp_test();
+

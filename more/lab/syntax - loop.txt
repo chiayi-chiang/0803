@@ -1,0 +1,78 @@
+use test;
+
+
+
+
+// while true/false do
+// ...
+// end while;
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test (upperBound int) 
+begin
+  declare i int default 1;
+  while (i <= upperBound) do
+    select i;
+    set i = i + 1;
+  end while;
+end
+$$
+delimiter ;
+
+call usp_test(3);
+
+
+
+
+// iterate loop
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test (upperBound int) 
+begin
+  declare i int default 1;
+  
+  myLoop: while (i <= upperBound) do
+    if i = 4 then
+      set i = i + 1;
+      iterate myLoop;
+    end if;
+    select i;
+    set i = i + 1;
+  end while;
+end
+$$
+delimiter ;
+
+call usp_test(6);
+
+
+
+
+// leave loop
+
+delimiter $$
+drop procedure if exists usp_test $$
+
+create procedure usp_test (upperBound int) 
+begin
+  declare i int default 1;
+  
+  myLoop: while (i <= upperBound) do
+    if i = 4 then
+      set i = i + 1;
+      leave myLoop;
+    end if;
+    select i;
+    set i = i + 1;
+  end while;
+end
+$$
+delimiter ;
+
+call usp_test(6);
+
+

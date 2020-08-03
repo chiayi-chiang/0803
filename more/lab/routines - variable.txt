@@ -1,0 +1,19 @@
+﻿-- 請找出為何無法建立以下的預存程序:
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `test`.`usp_variable` $$
+CREATE PROCEDURE `test`.`usp_variable` ()
+BEGIN
+  declare i int default 0;
+
+  i = 30;
+  select 'i =' as Result, @i;
+
+  select count(*) from mysql.user into @i
+  select 'user count = ' as Result, @i;
+
+END $$
+
+DELIMITER ;
+
+-- 還有一種方法, 請參照另一例: cursor

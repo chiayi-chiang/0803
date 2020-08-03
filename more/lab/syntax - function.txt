@@ -1,0 +1,18 @@
+use test;
+
+delimiter $$
+drop function if exists fn_test $$
+
+create function fn_test (x int, y int) 
+RETURNS int
+begin
+  declare result int default 0;
+  set result = x + y;
+  return result;
+end
+$$
+delimiter ;
+
+select fn_test(1, 2);
+
+

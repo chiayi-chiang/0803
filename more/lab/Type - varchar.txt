@@ -1,0 +1,17 @@
+use test;
+
+drop table Lab;
+
+create table Lab
+(
+  id int auto_increment unique,
+  data varchar(5) not null
+);
+
+insert into Lab (data) values ('123');
+insert into Lab (data) values ('1234567');
+insert into Lab (data) values (' 12 ');
+
+select id, concat('*', data, '*') as dataField
+  from Lab;
+

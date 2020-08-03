@@ -1,0 +1,6 @@
+use test;
+create table categories
+(
+  CategoryID int(11) default 0,
+  CategoryName varchar(15)
+);

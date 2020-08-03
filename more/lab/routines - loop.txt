@@ -1,0 +1,95 @@
+﻿-- call usp_loop(10); 檢視整個執行過程
+-- 如果要「跳過」i = 4 的那次, 程式該怎麼修改?
+-- 一旦 result 超過 30 就不再繼續, 程式該怎麼修改?
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `test`.`usp_loop` $$
+CREATE PROCEDURE `test`.`usp_loop` (iTest int)
+BEGIN
+  declare result int default 0;
+  declare i int;
+
+  set i = 1;
+  while i  <= iTest do
+    set result = result + i;
+    select i, result;
+    set i = i + 1;
+  end while;
+END $$
+
+DELIMITER ;
+
+-- call usp_loop(10);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DROP PROCEDURE IF EXISTS `test`.`usp_loop` $$
+CREATE PROCEDURE `test`.`usp_loop` (iTest int)
+BEGIN
+  declare result int default 0;
+  declare i int;
+
+  set i = 1;
+  lwhile: while i  <= iTest do
+    if i = 4 then
+      set i = i + 1;
+      iterate lwhile;
+    end if;
+    set result = result + i;
+    select i, result;
+    set i = i + 1;
+  end while;
+END $$
+
+DELIMITER ;

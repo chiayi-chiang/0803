@@ -1,0 +1,41 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [SQL ] SELECT FOR UPDATE
+ 時間  Tue Oct 16 21:06:51 2012
+───────────────────────────────────────
+
+※ 引述《a613204 (胖胖)》之銘言：
+: 想請問一下在MySQL中這個語法
+: 我查了一下 , 發現它可以把某些資料先Lock起來 , 讓它沒辦法讀
+: 例如SELECT * FROM tb_name where id=xxx;
+: 這樣id:xx的資料就會被lock起來
+: 請問有人用這個方法做資料列的鎖定嗎?
+
+MySQL 的確有 select ... for update 可進行 row lock，然而，實際應用
+時有些注意事項：
+
+1. 只應用於 InnoDB 的資料表
+   create table your talbe (...) engine=InnoDB;
+
+2. 某個連線以 select ... for update; 鎖定資料列之後，其他連線也必
+   須加上 select ... lock in share mode; (或 for update)，才有被
+   擋下來的鎖定效果，不然，就請按下列第三點的作法。
+
+3. 隔離等級設為 serializable，MySQL 會幫每一個 select 都加上 lock
+   in share mode，像這樣子設:
+
+   set autocommit = off;
+   set transaction isolation level serializable;
+   start transaction;
+   select ... ;
+   commit;
+
+
+除了每個連線各自設定，DBA也可用 set global transaction ... 進行全
+面設定，或者，修改 my.ini (my.cnf) 組態檔:
+[mysqld]
+transaction-isolation=選項
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc)
+◆ From: 118.170.128.106
+推 a613204:感謝~                                                   10/16 21:32

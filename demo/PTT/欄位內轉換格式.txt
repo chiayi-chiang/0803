@@ -1,0 +1,86 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [SQL ] 欄位內轉換格式 (求概念)
+ 時間  Wed Aug 27 20:55:34 2014
+───────────────────────────────────────
+
+※ 引述《MOONY135 (談無慾)》之銘言：
+: 只求概念 因為SAS SQL語法會稍微的不一樣
+: [問題敘述]:
+: 格式大概長這樣 想從資料庫裡面抓的學號格式改成常見的格式
+:   學號     切成     不需要   A1 B1 C1
+: 00280061    ->        00     28 00 61
+: A1與B1轉換成學號的格式是這樣
+: 00~09 -> 0~9   A~Z -> 10~36
+: C1則是完全取用
+:                A1_TRANS  B1_TRANC    C1
+: 所以這樣轉換後   28->S    00->0     61->61 合併起來之後
+: 會變成S061
+
+
+假如轉換規則是固定的話，我應該會採用直接查表的寫法，請參考看看：
+
+use Lab
+go
+
+create table student (
+  id char(8),
+)
+go
+
+insert into student values ('00280061');
+go
+
+
+declare @pool char(36) = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+select
+  substring(@pool, substring(id, 3, 2) + 1, 1) +
+  substring(@pool, substring(id, 5, 2) + 1, 1) +
+  substring(id, 7, 2)
+from student
+go
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc), 來自: 111.252.121.133
+※ 文章網址: http://www.ptt.cc/bbs/Database/M.1409144136.A.330.html
+→ MOONY135: 轉換規則固定的                                        08/27 21:36
+→ MOONY135: 感謝您 我試試看                                       08/28 08:43
+→ MOONY135: substring(id, 3, 2)取出來會是 字串 28 而非數字        08/28 12:04
+→ MOONY135: 請問要怎樣處理?                                       08/28 12:04
+推 GoalBased: 用字串比對不行嗎? 為何要用數字                       08/28 12:18
+→ TeemingVoid: 在我寫的T-SQL例子，substring() + 1 就會自動轉型    08/28 14:04
+→ TeemingVoid: 成整數，若要手動轉換，T-SQL呼叫 Convert() 函數。    08/28 14:04
+→ TeemingVoid: SAS SQL 我沒在用，要麻煩請M大查一下 SAS SQL 要     08/28 14:04
+→ TeemingVoid: 怎麼進行型別轉換。                                 08/28 14:05
+→ smlboby: MSSQL用charindex/Oracle用instr 找字串起始位置          08/28 14:51
+→ TeemingVoid: 樓上說的沒錯。而M大原問的是已知數碼，要查代碼。    08/28 15:01
+推 MOONY135: 喔喔 所以要型別轉換 因為我剛摸SQL...                  08/28 21:03
+→ MOONY135: 不過我忘記說 我的學號是文字格式...                    08/28 21:04
+→ MOONY135: 學號要是數字格式才能這樣做嗎?                         08/28 21:04
+→ MOONY135: 學號代碼(字串格式) -> 學號(字串)  還是我一開始就想    08/28 21:05
+→ MOONY135: 錯格式了?                                             08/28 21:05
+
+沒錯啊! 學號是文字型態, 轉換之後, 還是文字型態。
+
+OK，我再寫仔細一些 :-)
+
+-- Part A，從第3個位置起，取兩個字元，得到字串 '28'
+substring('00280061', 3, 2) ==> '28'
+
+-- 接下來，查表轉成 'S' (從第28個位置起，取一個字元):
+substring('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', '28' + 1, 1)
+--         123456789012345678901234567890123456789
+--                  1         2       ^ 3
+
+問題是，字串'28'可以加一嗎? T-SQL在這個例子會自動幫忙型別轉換:
+-- 29
+select '28' + 1
+
+若要自己轉，自然也行:
+-- 還是 29
+select convert(int, '28') + 1
+
+您使用的是 SAS SQL，會不會自動轉換型別以及該怎麼進行型別轉換，
+就有勞您再查查。 :-)
+※ 編輯: TeemingVoid (114.41.97.192), 08/28/2014 21:34:12
+→ MOONY135: 非常感謝您的熱心回答                                  08/28 21:44
+→ MOONY135: 接觸到SQL之後才知道原來這麼好用..                     08/28 21:45

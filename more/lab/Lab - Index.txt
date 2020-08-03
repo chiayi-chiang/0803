@@ -1,0 +1,28 @@
+-- exlpain:
+use world;
+explain select * from country where name = 'France'\G
+explain select * from country where code = 'FRA'\G
+
+
+-- setup:
+create table CountryList engine=MyISAM select Code, Name from Country;
+create table CityList engine=MyISAM select id, CountryCode, Name, Population from City;
+
+-- Take 1: (239 * 4079)
+explain select CountryList.Name, CityList.Name, CityList.Population from CountryList join CityList on CityList.CountryCode = CountryList.Code and Population > 8000000\G
+
+
+-- Take 2: (4079 * 1)
+alter table CountryList add primary key (code);
+create index idx_Country on CityList (CountryCode);
+explain select CountryList.Name, CityList.Name, CityList.Population from CountryList join CityList on CityList.CountryCode = CountryList.Code and Population > 8000000\G
+
+-- Take 3: (11 * 1)
+create index idx_Population on CityList (Population);
+explain select CountryList.Name, CityList.Name, CityList.Population from CountryList join CityList on CityList.CountryCode = CountryList.Code and Population > 8000000\G
+
+
+-- MyISAM cache index
+set global city_cache.key_buffer_size = 4194304;
+cache index world.citylist in city_cache;
+load index into cache world.citylist;

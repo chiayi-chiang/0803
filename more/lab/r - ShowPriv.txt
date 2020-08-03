@@ -1,0 +1,11 @@
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `mysql`.`ShowPriv` $$
+CREATE PROCEDURE `mysql`.`ShowPriv` ()
+BEGIN
+  select user, host, password from user;
+  select host, db, user, select_priv, insert_priv, update_priv from db;
+  select host, db, user, table_name, table_priv from tables_priv;
+END $$
+
+DELIMITER ;

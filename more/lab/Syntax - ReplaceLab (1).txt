@@ -1,0 +1,16 @@
+use test;
+
+drop table ReplaceLab;
+
+create table ReplaceLab
+(
+  id int not null unique,
+  data char(3) null
+);
+
+insert into ReplaceLab (id, data) values (1, 'a');
+insert into ReplaceLab (id, data) values (1, 'b');
+select * from ReplaceLab;
+
+replace into ReplaceLab (id, data) values (1, 'b');
+select * from ReplaceLab;

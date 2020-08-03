@@ -1,0 +1,231 @@
+mysql> source c:\lab\northwind.sql
+
+
+mysql> use northwind;
+Database changed
+mysql> select productID, productName, unitsInStock
+    ->   from products where unitsInStock < reOrderLevel
+    ->
+    -> ;
++-----------+---------------------------+--------------+
+| productID | productName               | unitsInStock |
++-----------+---------------------------+--------------+
+|         2 | Chang                     |           17 |
+|         3 | Aniseed Syrup             |           13 |
+|        11 | Queso Cabrales            |           22 |
+|        21 | Sir Rodney's Scones       |            3 |
+|        30 | Nord-Ost Matjeshering     |           10 |
+|        31 | Gorgonzola Telino         |            0 |
+|        32 | Mascarpone Fabioli        |            9 |
+|        37 | Gravad lax                |           11 |
+|        43 | Ipoh Coffee               |           17 |
+|        45 | Rogede sild               |            5 |
+|        48 | Chocolade                 |           15 |
+|        49 | Maxilaku                  |           10 |
+|        56 | Gnocchi di nonna Alice    |           21 |
+|        64 | Wimmers gute Semmelknodel |           22 |
+|        66 | Louisiana Hot Spiced Okra |            4 |
+|        68 | Scottish Longbreads       |            6 |
+|        70 | Outback Lager             |           15 |
+|        74 | Longlife Tofu             |            4 |
++-----------+---------------------------+--------------+
+18 rows in set (0.00 sec)
+
+mysql> select productID, productName, unitsInStock, reOrderLevel
+    ->   from products where unitsInStock < reOrderLevel;
++-----------+---------------------------+--------------+--------------+
+| productID | productName               | unitsInStock | reOrderLevel |
++-----------+---------------------------+--------------+--------------+
+|         2 | Chang                     |           17 |           25 |
+|         3 | Aniseed Syrup             |           13 |           25 |
+|        11 | Queso Cabrales            |           22 |           30 |
+|        21 | Sir Rodney's Scones       |            3 |            5 |
+|        30 | Nord-Ost Matjeshering     |           10 |           15 |
+|        31 | Gorgonzola Telino         |            0 |           20 |
+|        32 | Mascarpone Fabioli        |            9 |           25 |
+|        37 | Gravad lax                |           11 |           25 |
+|        43 | Ipoh Coffee               |           17 |           25 |
+|        45 | Rogede sild               |            5 |           15 |
+|        48 | Chocolade                 |           15 |           25 |
+|        49 | Maxilaku                  |           10 |           15 |
+|        56 | Gnocchi di nonna Alice    |           21 |           30 |
+|        64 | Wimmers gute Semmelknodel |           22 |           30 |
+|        66 | Louisiana Hot Spiced Okra |            4 |           20 |
+|        68 | Scottish Longbreads       |            6 |           15 |
+|        70 | Outback Lager             |           15 |           30 |
+|        74 | Longlife Tofu             |            4 |            5 |
++-----------+---------------------------+--------------+--------------+
+18 rows in set (0.00 sec)
+
+mysql> create view vNeedReOrder as
+    -> select productID, productName, unitsInStock, reOrderLevel
+    ->   from products where unitsInStock < reOrderLevel;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> select * from vNeedReOrder;
++-----------+---------------------------+--------------+--------------+
+| productID | productName               | unitsInStock | reOrderLevel |
++-----------+---------------------------+--------------+--------------+
+|         2 | Chang                     |           17 |           25 |
+|         3 | Aniseed Syrup             |           13 |           25 |
+|        11 | Queso Cabrales            |           22 |           30 |
+|        21 | Sir Rodney's Scones       |            3 |            5 |
+|        30 | Nord-Ost Matjeshering     |           10 |           15 |
+|        31 | Gorgonzola Telino         |            0 |           20 |
+|        32 | Mascarpone Fabioli        |            9 |           25 |
+|        37 | Gravad lax                |           11 |           25 |
+|        43 | Ipoh Coffee               |           17 |           25 |
+|        45 | Rogede sild               |            5 |           15 |
+|        48 | Chocolade                 |           15 |           25 |
+|        49 | Maxilaku                  |           10 |           15 |
+|        56 | Gnocchi di nonna Alice    |           21 |           30 |
+|        64 | Wimmers gute Semmelknodel |           22 |           30 |
+|        66 | Louisiana Hot Spiced Okra |            4 |           20 |
+|        68 | Scottish Longbreads       |            6 |           15 |
+|        70 | Outback Lager             |           15 |           30 |
+|        74 | Longlife Tofu             |            4 |            5 |
++-----------+---------------------------+--------------+--------------+
+18 rows in set (0.00 sec)
+
+mysql> select productID, productName, unitPrice
+    ->   from products where unitPrice < 20;
++-----------+---------------------------------+-----------+
+| productID | productName                     | unitPrice |
++-----------+---------------------------------+-----------+
+|         1 | Chai                            |   18.0000 |
+|         2 | Chang                           |   19.0000 |
+|         3 | Aniseed Syrup                   |   10.0000 |
+|        13 | Konbu                           |    6.0000 |
+|        15 | Genen Shouyu                    |   15.5000 |
+|        16 | Pavlova                         |   17.4500 |
+|        19 | Teatime Chocolate Biscuits      |    9.2000 |
+|        21 | Sir Rodney's Scones             |   10.0000 |
+|        23 | Tunnbrod                        |    9.0000 |
+|        24 | Guarana Fantastica              |    4.5000 |
+|        25 | NuNuCa Nus-Nougat-Creme         |   14.0000 |
+|        31 | Gorgonzola Telino               |   12.5000 |
+|        33 | Geitost                         |    2.5000 |
+|        34 | Sasquatch Ale                   |   14.0000 |
+|        35 | Steeleye Stout                  |   18.0000 |
+|        36 | Inlagd Sill                     |   19.0000 |
+|        39 | Chartreuse verte                |   18.0000 |
+|        40 | Boston Crab Meat                |   18.4000 |
+|        41 | Jack's New England Clam Chowder |    9.6500 |
+|        42 | Singaporean Hokkien Fried Mee   |   14.0000 |
+|        44 | Gula Malacca                    |   19.4500 |
+|        45 | Rogede sild                     |    9.5000 |
+|        46 | Spegesild                       |   12.0000 |
+|        47 | Zaanse koeken                   |    9.5000 |
+|        48 | Chocolade                       |   12.7500 |
+|        50 | Valkoinen suklaa                |   16.2500 |
+|        52 | Filo Mix                        |    7.0000 |
+|        54 | Tourtiere                       |    7.4500 |
+|        57 | Ravioli Angelo                  |   19.5000 |
+|        58 | Escargots de Bourgogne          |   13.2500 |
+|        66 | Louisiana Hot Spiced Okra       |   17.0000 |
+|        67 | Laughing Lumberjack Lager       |   14.0000 |
+|        68 | Scottish Longbreads             |   12.5000 |
+|        70 | Outback Lager                   |   15.0000 |
+|        73 | Rod Kaviar                      |   15.0000 |
+|        74 | Longlife Tofu                   |   10.0000 |
+|        75 | Rhonbrau Klosterbier            |    7.7500 |
+|        76 | Lakkalikoori                    |   18.0000 |
+|        77 | Original Frankfurter grune Sose |   13.0000 |
++-----------+---------------------------------+-----------+
+39 rows in set (0.00 sec)
+
+mysql> select productID, productName, unitPrice
+    ->   from products where unitPrice < 10;
++-----------+---------------------------------+-----------+
+| productID | productName                     | unitPrice |
++-----------+---------------------------------+-----------+
+|        13 | Konbu                           |    6.0000 |
+|        19 | Teatime Chocolate Biscuits      |    9.2000 |
+|        23 | Tunnbrod                        |    9.0000 |
+|        24 | Guarana Fantastica              |    4.5000 |
+|        33 | Geitost                         |    2.5000 |
+|        41 | Jack's New England Clam Chowder |    9.6500 |
+|        45 | Rogede sild                     |    9.5000 |
+|        47 | Zaanse koeken                   |    9.5000 |
+|        52 | Filo Mix                        |    7.0000 |
+|        54 | Tourtiere                       |    7.4500 |
+|        75 | Rhonbrau Klosterbier            |    7.7500 |
++-----------+---------------------------------+-----------+
+11 rows in set (0.00 sec)
+
+mysql> create view vLowerPrice as
+    -> select productID, productName, unitPrice
+    ->   from products where unitPrice < 10;
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> select * from vLowerPrice;
++-----------+---------------------------------+-----------+
+| productID | productName                     | unitPrice |
++-----------+---------------------------------+-----------+
+|        13 | Konbu                           |    6.0000 |
+|        19 | Teatime Chocolate Biscuits      |    9.2000 |
+|        23 | Tunnbrod                        |    9.0000 |
+|        24 | Guarana Fantastica              |    4.5000 |
+|        33 | Geitost                         |    2.5000 |
+|        41 | Jack's New England Clam Chowder |    9.6500 |
+|        45 | Rogede sild                     |    9.5000 |
+|        47 | Zaanse koeken                   |    9.5000 |
+|        52 | Filo Mix                        |    7.0000 |
+|        54 | Tourtiere                       |    7.4500 |
+|        75 | Rhonbrau Klosterbier            |    7.7500 |
++-----------+---------------------------------+-----------+
+11 rows in set (0.00 sec)
+
+mysql> update vLowerPrice set unitsInStock = 13 where productID = 13;
+ERROR 1054 (42S22): Unknown column 'unitsInStock' in 'field list'
+mysql> update vLowerPrice set unitPrice= 22 where productID = 2;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> update vLowerPrice set unitPrice= 16 where productID = 13;
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from vLowerPrice;
++-----------+---------------------------------+-----------+
+| productID | productName                     | unitPrice |
++-----------+---------------------------------+-----------+
+|        19 | Teatime Chocolate Biscuits      |    9.2000 |
+|        23 | Tunnbrod                        |    9.0000 |
+|        24 | Guarana Fantastica              |    4.5000 |
+|        33 | Geitost                         |    2.5000 |
+|        41 | Jack's New England Clam Chowder |    9.6500 |
+|        45 | Rogede sild                     |    9.5000 |
+|        47 | Zaanse koeken                   |    9.5000 |
+|        52 | Filo Mix                        |    7.0000 |
+|        54 | Tourtiere                       |    7.4500 |
+|        75 | Rhonbrau Klosterbier            |    7.7500 |
++-----------+---------------------------------+-----------+
+10 rows in set (0.00 sec)
+
+mysql> create view vLowerPriceC as
+    -> select productID, productName, unitPrice
+    ->   from products where unitPrice < 10
+    -> with check option;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from vLowerPriceC;
++-----------+---------------------------------+-----------+
+| productID | productName                     | unitPrice |
++-----------+---------------------------------+-----------+
+|        19 | Teatime Chocolate Biscuits      |    9.2000 |
+|        23 | Tunnbrod                        |    9.0000 |
+|        24 | Guarana Fantastica              |    4.5000 |
+|        33 | Geitost                         |    2.5000 |
+|        41 | Jack's New England Clam Chowder |    9.6500 |
+|        45 | Rogede sild                     |    9.5000 |
+|        47 | Zaanse koeken                   |    9.5000 |
+|        52 | Filo Mix                        |    7.0000 |
+|        54 | Tourtiere                       |    7.4500 |
+|        75 | Rhonbrau Klosterbier            |    7.7500 |
++-----------+---------------------------------+-----------+
+10 rows in set (0.00 sec)
+
+mysql> update vLowerPriceC set unitPrice= 19 where productID = 19;
+ERROR 1369 (HY000): CHECK OPTION failed 'northwind.vlowerpricec'
+mysql>

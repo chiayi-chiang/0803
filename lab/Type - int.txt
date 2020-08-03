@@ -1,0 +1,17 @@
+use test;
+
+drop table Lab;
+
+create table Lab
+(
+  id int auto_increment primary key,
+  data int not null
+);
+
+insert into Lab (data) values (1);
+insert into Lab (data) values (1.4);
+insert into Lab (data) values (1.5);
+-- ??
+insert into Lab (data) values (1.9);
+
+select * from Lab;

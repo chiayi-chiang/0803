@@ -1,0 +1,29 @@
+﻿ 作者  TeemingVoid (TeemingVoid)                               看板  Database
+ 標題  Re: [SQL ] 查詢後記憶體未釋放
+ 時間  Sun May 18 01:45:51 2014
+───────────────────────────────────────
+
+※ 引述《pttsasho (sasho)》之銘言：
+: （針對 SQL 語言的問題，用這個標題。請用 Ctrl+Y 砍掉這行）
+:    資料庫名稱： MySQL
+:    資料庫版本： 6.0.4-alpha
+: 內容/問題描述：
+: 之前有調整過my.ini
+: 但調整後發現一個問題
+: 就是隨著我查詢的次數增加後
+: 我的記憶體佔用也會跟著增加
+: 除非把mysql關掉重開 不然佔用的記憶體並不會釋放出來
+: 不曉得是否有高手可以幫忙指點一下為什麼會這樣 以及該如何解決?
+
+用 FLUSH TABLES 可以清掉 MySQL 的 table cache。
+
+如果您在 my.ini 改的是 query_cache_size、query_cache_type，
+使用 RESET QUERY CACHE 指令可以清除 query cache 記憶體。
+
+如果記憶體佔用的問題是因為 InnoDB 使用愈來愈多的緩衝區，除了
+重新啟動 MySQL 服務，目前沒有其他方式有辦法釋出記憶體。建議您
+修改 my.ini(my.cnf)，調低 innodb_buffer_pool_size 上限值。
+
+--
+※ 發信站: 批踢踢實業坊(ptt.cc), 來自: 114.38.87.52
+※ 文章網址: http://www.ptt.cc/bbs/Database/M.1400348753.A.30F.html

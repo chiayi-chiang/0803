@@ -1,0 +1,18 @@
+use test;
+
+drop table Lab;
+
+create table Lab
+(
+  id int auto_increment primary key,
+  data enum('Y', 'N') not null default 'Y',
+  data2 int null
+);
+
+insert into Lab (data) values ('Y');
+insert into Lab (data) values ('y');
+insert into Lab (data) values ('x');
+insert into Lab (data) values ('n');
+insert into Lab (data2) values (10);
+
+select id, concat('*', data, '*') as DataField from Lab;

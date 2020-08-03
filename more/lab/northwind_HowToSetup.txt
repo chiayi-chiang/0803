@@ -1,0 +1,32 @@
+________________________________
+
+Setting Up the northwind Database
+________________________________
+
+The northwind.sql file contains sample data for a northwind database that you can play with. 
+
+To load the contents of the northwind.sql file into MySQL, use the following procedure:
+
+1. Change directory to where the northwind.sql file is located
+   If your current directory is not the same as the location of the northwind.sql file, 
+   use a cd command to change location.
+
+   c:\> cd c:\lab
+
+
+2. Connect to the MySQL server using the mysql program
+   At your command-line prompt, issue this command:
+
+   c:\Lab> mysql -u root -p
+
+3. Create the northwind database and select it as the default database:
+   In the mysql program, issue the following statements:
+
+   mysql> CREATE DATABASE northwind;
+   mysql> USE northwind;
+
+4. Load the contents of northwind.sql into the northwind database
+   Issue a SOURCE command to tell mysql to read.
+   
+   mysql> source northwind.sql
+

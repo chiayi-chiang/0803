@@ -1,0 +1,299 @@
+
+mysql> show create database labdb;
++----------+----------------------------------------------------------------+
+| Database | Create Database                                                |
++----------+----------------------------------------------------------------+
+| labdb    | CREATE DATABASE `labdb` /*!40100 DEFAULT CHARACTER SET utf8 */ |
++----------+----------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> show variables like 'char%';
++--------------------------+----------------------------------------------------
+-----------+
+| Variable_name            | Value
+           |
++--------------------------+----------------------------------------------------
+-----------+
+| character_set_client     | utf8
+           |
+| character_set_connection | utf8
+           |
+| character_set_database   | utf8
+           |
+| character_set_filesystem | binary
+           |
+| character_set_results    | utf8
+           |
+| character_set_server     | utf8
+           |
+| character_set_system     | utf8
+           |
+| character_sets_dir       | C:\Program Files (x86)\MySQL\MySQL Server 5.1\share
+\charsets\ |
++--------------------------+----------------------------------------------------
+-----------+
+8 rows in set (0.00 sec)
+
+mysql> use labdb;
+Database changed
+mysql> create table labTable (id int primary key, data varchar(10));
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> show create table labTable;
++----------+--------------------------------------------------------------------
+-----------------------------------------------------------------------------+
+| Table    | Create Table
+                                                                             |
++----------+--------------------------------------------------------------------
+-----------------------------------------------------------------------------+
+| labTable | CREATE TABLE `labtable` (
+  `id` int(11) NOT NULL,
+  `data` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
++----------+--------------------------------------------------------------------
+-----------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> insert into labTable values (1, 'data A');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> select * from labTable;
++----+--------+
+| id | data   |
++----+--------+
+|  1 | data A |
++----+--------+
+1 row in set (0.00 sec)
+
+mysql> insert into labTable values (2, '¸ê®Æ BBB');
+ERROR 1366 (HY000): Incorrect string value: '\xB8\xEA\xAE\xC6 B...' for column '
+data' at row 1
+mysql> set character_set_client = bit5;
+ERROR 1115 (42000): Unknown character set: 'bit5'
+mysql> show variables like 'char%';
++--------------------------+----------------------------------------------------
+-----------+
+| Variable_name            | Value
+           |
++--------------------------+----------------------------------------------------
+-----------+
+| character_set_client     | utf8
+           |
+| character_set_connection | utf8
+           |
+| character_set_database   | utf8
+           |
+| character_set_filesystem | binary
+           |
+| character_set_results    | utf8
+           |
+| character_set_server     | utf8
+           |
+| character_set_system     | utf8
+           |
+| character_sets_dir       | C:\Program Files (x86)\MySQL\MySQL Server 5.1\share
+\charsets\ |
++--------------------------+----------------------------------------------------
+-----------+
+8 rows in set (0.00 sec)
+
+mysql> set character_set_client = big5;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> insert into labTable values (2, '¸ê®Æ BBB');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> show create table labTable;
++----------+--------------------------------------------------------------------
+-----------------------------------------------------------------------------+
+| Table    | Create Table
+                                                                             |
++----------+--------------------------------------------------------------------
+-----------------------------------------------------------------------------+
+| labTable | CREATE TABLE `labtable` (
+  `id` int(11) NOT NULL,
+  `data` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
++----------+--------------------------------------------------------------------
+-----------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> show variables like 'char%';
++--------------------------+----------------------------------------------------
+-----------+
+| Variable_name            | Value
+           |
++--------------------------+----------------------------------------------------
+-----------+
+| character_set_client     | big5
+           |
+| character_set_connection | utf8
+           |
+| character_set_database   | utf8
+           |
+| character_set_filesystem | binary
+           |
+| character_set_results    | utf8
+           |
+| character_set_server     | utf8
+           |
+| character_set_system     | utf8
+           |
+| character_sets_dir       | C:\Program Files (x86)\MySQL\MySQL Server 5.1\share
+\charsets\ |
++--------------------------+----------------------------------------------------
+-----------+
+8 rows in set (0.00 sec)
+
+mysql> select * from labTable;
++----+------------+
+| id | data       |
++----+------------+
+|  1 | data A     |
+|  2 | è³‡æ? BBB   |
++----+------------+
+2 rows in set (0.00 sec)
+
+mysql> show variables like 'char%';
++--------------------------+----------------------------------------------------
+-----------+
+| Variable_name            | Value
+           |
++--------------------------+----------------------------------------------------
+-----------+
+| character_set_client     | big5
+           |
+| character_set_connection | utf8
+           |
+| character_set_database   | utf8
+           |
+| character_set_filesystem | binary
+           |
+| character_set_results    | utf8
+           |
+| character_set_server     | utf8
+           |
+| character_set_system     | utf8
+           |
+| character_sets_dir       | C:\Program Files (x86)\MySQL\MySQL Server 5.1\share
+\charsets\ |
++--------------------------+----------------------------------------------------
+-----------+
+8 rows in set (0.00 sec)
+
+mysql> set character_set_results = big5;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from labTable;
++----+----------+
+| id | data     |
++----+----------+
+|  1 | data A   |
+|  2 | ¸ê®Æ BBB     |
++----+----------+
+2 rows in set (0.00 sec)
+
+mysql> show variables like 'char%';
++--------------------------+----------------------------------------------------
+-----------+
+| Variable_name            | Value
+           |
++--------------------------+----------------------------------------------------
+-----------+
+| character_set_client     | big5
+           |
+| character_set_connection | utf8
+           |
+| character_set_database   | utf8
+           |
+| character_set_filesystem | binary
+           |
+| character_set_results    | big5
+           |
+| character_set_server     | utf8
+           |
+| character_set_system     | utf8
+           |
+| character_sets_dir       | C:\Program Files (x86)\MySQL\MySQL Server 5.1\share
+\charsets\ |
++--------------------------+----------------------------------------------------
+-----------+
+8 rows in set (0.00 sec)
+
+mysql> exit
+Bye
+
+C:\>mysql -uroot -proot
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 4
+Server version: 5.1.51-community MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2010, Oracle and/or its affiliates. All rights reserved.
+This software comes with ABSOLUTELY NO WARRANTY. This is free software,
+and you are welcome to modify and redistribute it under the GPL v2 license
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show variables like 'chat%';
+Empty set (0.00 sec)
+
+mysql> show variables like 'char%';
++--------------------------+----------------------------------------------------
+-----------+
+| Variable_name            | Value
+           |
++--------------------------+----------------------------------------------------
+-----------+
+| character_set_client     | utf8
+           |
+| character_set_connection | utf8
+           |
+| character_set_database   | utf8
+           |
+| character_set_filesystem | binary
+           |
+| character_set_results    | utf8
+           |
+| character_set_server     | utf8
+           |
+| character_set_system     | utf8
+           |
+| character_sets_dir       | C:\Program Files (x86)\MySQL\MySQL Server 5.1\share
+\charsets\ |
++--------------------------+----------------------------------------------------
+-----------+
+8 rows in set (0.00 sec)
+
+mysql> set names big5;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show variables like 'char%';
++--------------------------+----------------------------------------------------
+-----------+
+| Variable_name            | Value
+           |
++--------------------------+----------------------------------------------------
+-----------+
+| character_set_client     | big5
+           |
+| character_set_connection | big5
+           |
+| character_set_database   | utf8
+           |
+| character_set_filesystem | binary
+           |
+| character_set_results    | big5
+           |
+| character_set_server     | utf8
+           |
+| character_set_system     | utf8
+           |
+| character_sets_dir       | C:\Program Files (x86)\MySQL\MySQL Server 5.1\share
+\charsets\ |
++--------------------------+----------------------------------------------------
+-----------+
+8 rows in set (0.00 sec)
+
+mysql>
