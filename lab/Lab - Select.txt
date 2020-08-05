@@ -146,25 +146,28 @@ select *
   where ProductName Like binary 'c%'
 
 /* 310
-  按照員工資料表(employees)的內容, 請查出一共有幾位員工?9含null
+  按照員工資料表(employees)的內容, 請查出一共有幾位員工?
+  9含null
  */
 SELECT COUNT(*) FROM employees
 
 
 /* 320
-  按照員工資料表(employees)的內容, ReportsTo有資料的記錄一共幾筆?8不含null
+  按照員工資料表(employees)的內容, ReportsTo有資料的記錄一共幾筆?
+  8不含null
  */
 SELECT COUNT(reportsto) FROM employees
 
 /* 330
   下列的指令, 請問錯了嗎?********
  */
+  productID是多餘的，因為有group BY的關係，系統可能無法辨別
 
-select categoryID, productID, AVG(UnitPrice)
+  select categoryID, productID, AVG(UnitPrice)
   from products
   group by categoryID
 
-
+  只有寫在group by 的欄位名稱才會出現在select中
 /* 340
   categoryID 是產品類別的代號, 請統計各類產品(products)的庫存成本?
   庫存成本請直接以: 庫存量 * 牌價 (UnitsInStock * UnitPrice) 計算即可.
@@ -191,7 +194,7 @@ select categoryID, Sum(UnitsInStock * UnitPrice)
 SELECT productid, orderid, SUM(quantity) AS total_quantity
  FROM `order details`
  GROUP BY productid, orderid
- WITH ROLLUP
+ WITH ROLLUP/*銷售總額與明細，同時呈現*/
 
 /*補充
   美商供應的產品清單
@@ -240,7 +243,8 @@ WHERE ???
   ProductID, ProductName, SupplierID
  */ 
 
-select ProductID, ProductName, SupplierID from products
+select ProductID, ProductName, SupplierID 
+from products
 
 
 /* 420
@@ -248,15 +252,25 @@ select ProductID, ProductName, SupplierID from products
    聯絡電話(Phone)、聯絡人(ContactName)好嗎?
    另外, 相同供應商的資料請列在一起
  */ 
-select ProductID, ProductName as PN, p.SupplierID, CompanyName, Phone, ContactName 
-  from products p join suppliers s
+select ProductID, 
+  ProductName as PN, 
+  p.SupplierID, 
+  CompanyName, 
+  Phone, 
+  ContactName 
+from products p join suppliers s
   on p.SupplierID = s.SupplierID
   order by p.SupplierID
-
+my try:
+SELECT `ProductID`,`ProductName`,p.SupplierID,
+      s.CompanyName,s.Phone,s.ContactName
+FROM products p JOIN suppliers s 
+ON p.SupplierID=s.SupplierID
+ORDER By p.SupplierID
 
 /* 430
-   我想列出「所有」供應商目前各自提供我們哪些產品資料的對照表,
-   目前沒提供我們產品的供應商也要列出
+   我想列出「**所有」供應商目前各自提供我們哪些產品資料的對照表,
+   目前沒提供我們產品的供應商也要列出，
 
    <note>
    下指令前, 請先執行下列指令:
@@ -264,24 +278,37 @@ select ProductID, ProductName as PN, p.SupplierID, CompanyName, Phone, ContactNa
    insert into suppliers
      (supplierID, CompanyName, ContactName, Phone)
       values
-     (30, 'Taiwan First', 'A-Ban', '(001) 000-0001')
+     (30***, 'Taiwan First', 'A-Ban', '(001) 000-0001')
+     結果顯示於suppliers最下面
    -- end --
  */ 
 
 select s.SupplierID, CompanyName, ProductID, ProductName 
-  from suppliers s left join products p
-  on s.SupplierID = p.SupplierID
-  order by s.SupplierID
-
+from suppliers s *left* join products p
+on s.SupplierID = p.SupplierID
+order by s.SupplierID
+此結果才會顯示於總結最下面
 
 
 /* 510
   請列出「有買 23 號產品, 而且買超過 20 個」的訂單。
  */ 
+select orderid , customerid
+from order AS or1
+where 20 < (select quantity 
+            from `order details` as od
+            where od.orderid = or1.orderid
+            and od.productid = 23)
+=
 select orderid, customerid from orders 
   where orderid in 
   (select orderid from `order details` 
     where productid = 23 and quantity > 20)
+=
+select d.orderid, customerid 
+from `order details` d JOIN orders o
+ON d.OrderID = o.OrderID
+WHERE productid = 23 and quantity >20
 
 
 /* 520
@@ -293,7 +320,11 @@ select EmployeeID, FirstName, LastName from Employees
     select EmployeeID from Orders
       where OrderDate = (select Max(OrderDate) from Orders)
   )
-
+=
+select E.EmployeeID, FirstName, LastName 
+from Employees E JOIN orders o
+ON E.EmployeeID= o.EmployeeID
+where OrderDate = (SELECT MAX(OrderDate) FROM orders)
 
 /* 530
   請列出各項產品的類別、編號、品名、單價、該類產品平均單價、
@@ -304,8 +335,9 @@ select CategoryID, ProductID, UnitPrice,
     from products as i 
     where CategoryID = o.CategoryID) as AvgPrice,
   UnitPrice - (select Avg(UnitPrice) 
-               from products as I 
-                where CategoryID = o.CategoryID) as DiffPrice
+               from products as i
+              where CategoryID = o.CategoryID) as DiffPrice
 from products as o
 order by CategoryID, ProductID
+
 

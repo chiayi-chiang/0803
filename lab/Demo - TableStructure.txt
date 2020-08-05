@@ -29,3 +29,23 @@ describe friends;
 -- -- 修改資料表結構 - 刪除欄位
 alter table friends
   drop column email;
+
+-- -- 設primarykey
+drop table t1;
+create table t1(
+  id int not null primary key,
+  data int null,
+);
+
+drop table t1;
+create table t1(
+  id int not null,
+  data int null,
+  primary key (id)
+);
+
+-- -- 複合索引,缺點佔空間，有select *時資料不會做索引
+create index idx_tel on students (tel,name)
+
+select id,tel
+from students where tel = 51
