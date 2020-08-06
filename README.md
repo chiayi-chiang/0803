@@ -1,6 +1,6 @@
 # MySQL 資料庫建置與基礎管理
 
-## 規畫關聯式資料庫
+## 2.規畫關聯式資料庫
   - 關聯式資料庫入門概論
     實體與實體會互動
     屬性與屬性不會互動
@@ -23,7 +23,7 @@
   - 以 MySqlDump 備份資料
   - 資料匯出與匯入
 
-## 以 DDL 語法定義資料庫結構
+## 3.以 DDL 語法定義資料庫結構
   - CREATE DATABASE
   - CREATE TABLE
   - ALTER TABLE
@@ -33,7 +33,37 @@
   - Foreign Key
   - CREATE INDEX
 
-## 以 DML 語法存取資料
+## 4.node
+  - 關聯customer和order兩表，
+    且防止資料其中一方被修改刪除
+  create table customer
+  (
+    cID int auto_increment,
+    cName varchar(20)
+  ) 
+  create table orders
+  (
+    oID int auto_increment primary key,
+    cID int auto_increment
+  ) 
+  alter table orders
+    add constraint fk_customer_orders
+      foreign key (customerId) references customer(customerId)
+      on update cascade
+      on delete cascade;
+  - 公司名稱不重複
+    alter table customer add constraint uc unique (companyName);
+    insert into customer values (4, 'AAA');
+    - 去規則
+      alter table customer drop constraint uc;
+      or
+      drop index table customer drop constraint uc;
+  - 索引不重複
+    create unique index idx_company on customer (companyName);
+    insert into customer values(4, 'AAA');
+    - 去規則
+     drop index idx_company on customer;   
+## 1.以 DML 語法存取資料
   - SELECT 查詢排列名稱
   / SELECT Distinct ....不重複資料
   / FROM 從哪個資料表查詢
@@ -66,3 +96,4 @@
   - SELECT ... LOCK IN SHARE MORE
   - SELECT ... FOR UPDATE
   convert(...,varchar)//轉換字串
+
