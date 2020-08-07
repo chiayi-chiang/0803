@@ -1,5 +1,6 @@
 mysql> use northwind;
 Database changed
+*transaction isolation level:隔離等級Ａ＝Ｂ
 mysql> set session transaction isolation level read committed;
 Query OK, 0 rows affected (0.00 sec)
 
@@ -18,7 +19,8 @@ mysql> select productid, unitprice from products where productid = 1;
 +-----------+-----------+
 1 row in set (0.00 sec)
 
-mysql> commit;
+＊mysql> commit;
+->B can see after
 Query OK, 0 rows affected (0.03 sec)
 
 mysql> start transaction;

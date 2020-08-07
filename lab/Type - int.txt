@@ -8,10 +8,12 @@ create table Lab
   data int not null
 );
 
-insert into Lab (data) values (1);
-insert into Lab (data) values (1.4);
-insert into Lab (data) values (1.5);
+insert into Lab (data) values (1);/*1
+insert into Lab (data) values (1.4);/*1
+insert into Lab (data) values (1.5);/*2
 -- ??
-insert into Lab (data) values (1.9);
+insert into Lab (data) values (1.9);/*2
+insert into Lab (data) values (1.8);/*2
 
 select * from Lab;
+## int() 數值

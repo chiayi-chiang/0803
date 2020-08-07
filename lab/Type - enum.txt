@@ -16,3 +16,4 @@ insert into Lab (data) values ('n');
 insert into Lab (data2) values (10);
 
 select id, concat('*', data, '*') as DataField from Lab;
+/*放入取出皆屬文字，油sql轉換*/

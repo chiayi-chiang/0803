@@ -15,3 +15,6 @@ insert into Lab (data) values (' 12 ');
 select id, concat('*', data, '*') as dataField
   from Lab;
 
+##char(10) 固定寬度
+  vs 
+  varchar(10)寬度變化大，可變動長度，滿溢刪除

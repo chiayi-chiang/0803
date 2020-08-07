@@ -12,3 +12,5 @@ insert into Lab (data) values (10);
 
 select * from Lab;
 
+## int(11) zerofill 不滿數值補０，多出既滿出
+      預設11

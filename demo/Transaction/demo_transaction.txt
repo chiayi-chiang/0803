@@ -1,6 +1,6 @@
 mysql> use northwind;
 Database changed
-mysql> start transaction;
+* mysql> start transaction;
 Query OK, 0 rows affected (0.00 sec)
 
 mysql> select productID, UnitPrice from products where productID = 1;
@@ -11,7 +11,7 @@ mysql> select productID, UnitPrice from products where productID = 1;
 +-----------+-----------+
 1 row in set (0.01 sec)
 
-mysql> update products set UnitPrice = 11 where productId = 1;
+* mysql> update products set UnitPrice = 11 where productId = 1;
 Query OK, 1 row affected (0.00 sec)
 Rows matched: 1  Changed: 1  Warnings: 0
 
@@ -23,7 +23,7 @@ mysql> select productID, UnitPrice from products where productID = 1;
 +-----------+-----------+
 1 row in set (0.00 sec)
 
-mysql> commit;
+* mysql> commit;
 Query OK, 0 rows affected (0.05 sec)
 
 mysql> update products set UnitPrice = 11 where productId = 1;
@@ -61,7 +61,8 @@ mysql> select productID, UnitPrice from products where productID = 1;
 +-----------+-----------+
 1 row in set (0.00 sec)
 
-mysql> rollback;
+*不算數 
+*mysql> rollback;
 Query OK, 0 rows affected (0.03 sec)
 
 mysql> select productID, UnitPrice from products where productID = 1;
@@ -143,7 +144,8 @@ mysql> select productID, UnitPrice from products where productID = 1;
 |         1 |  123.0000 |
 +-----------+-----------+
 1 row in set (0.00 sec)
-
+*autocommit=1---on自動開始為異動
+*autocommit=0---off異動時不自動commit
 mysql> show variables like 'auto%';
 +--------------------------+-------+
 | Variable_name            | Value |

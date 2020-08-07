@@ -14,3 +14,6 @@ insert into Lab (data) values (1234.125);
 insert into Lab (data) values (12345.12);
 
 select * from Lab;
+
+##數字加小數點（五位數,小數點後幾位）/*滿溢及提供999.99*/
+

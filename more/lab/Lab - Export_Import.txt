@@ -5,7 +5,12 @@
 -- select categoryId, categoryName into outfile 'c:\\temp\\lab.txt' from categories;
 
 select categoryId, categoryName 
-  into outfile 'c:\\temp\\lab.txt' 
+  into outfile 'c:\\temp\\lab１.txt' 
+  lines terminated by '\r\n'
+  from categories;
+
+select categoryId, categoryName 
+  into outfile 'c:\\temp\\lab２.txt' 
   lines terminated by '\r\n'
   from categories;
 
@@ -27,9 +32,11 @@ create table categories
 -- Records: 10  Deleted: 2  Skipped: 0  Warnings: 2
 
 load data infile 'c:\\temp\\lab.txt'
+  *改過的留下
   replace
   into table categories
   LINES TERMINATED BY '\r\n';
+  *先跳過幾行在開始處理
   -- ignore 2 lines;
 
 select * from categories;
@@ -47,6 +54,7 @@ create table categories
 
 
 load data infile 'c:\\temp\\lab.txt'
+  *忽略
   ignore
   into table categories
   LINES TERMINATED BY '\r\n';

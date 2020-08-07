@@ -21,6 +21,7 @@
   - MySQL 身份識別與授權之系統資料表
   - CREATE USER、GRANT、REVOKE 等 DCL 語法
   - 以 MySqlDump 備份資料
+     % /Applications/MAMP/Library/bin/mysqldump -uroot -proot northwind > gitLab/text.txt
   - 資料匯出與匯入
 
 ## 3.以 DDL 語法定義資料庫結構
@@ -93,7 +94,22 @@
 ## 異動（Transaction）與鎖定的觀念與管理
   - 異動（Transaction）的 ACID 特性
   - 理解 Transaction Isolation Level 與上機實驗
-  - SELECT ... LOCK IN SHARE MORE
-  - SELECT ... FOR UPDATE
-  convert(...,varchar)//轉換字串
+  - SELECT ... LOCK IN SHARE MORE ---read lock共用模式
+  - SELECT ... FOR UPDATE---write lock
+  - commite/rollback
+  - convert(...,varchar)//轉換字串
+  - lock Read可讀，不可寫
+  - lock write讀寫皆不行
+  - 單一性，正確性，永久性，隔離性．持續性
+## read lock vs write lock(會出現死結)
+  - 1.lock write now
+    2.lock write wite
+    3.lock write wite
+    1.unlok 2.can write 3.wite
+  ----------------------------
+  - 1.lock write now
+    2.lock read wite
+    3.lock write wite
+    1.unlock3.can write2.wite
+## 
 

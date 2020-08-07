@@ -49,6 +49,10 @@ mysql> select productid, unitprice from products where productid = 1;
 mysql> commit;
 Query OK, 0 rows affected (0.00 sec)
 
+mysql> select productid, unitprice from products where productid = 1 for up date;
+*願意花費多少時間
+mysql> show innodb_lock_wait_timeout
+
 mysql> start transaction;
 Query OK, 0 rows affected (0.00 sec)
 

@@ -15,3 +15,4 @@ insert into Lab (data) values ('music,reading');
 select * from Lab;
 select * from Lab where find_in_set('music', data);
 
+ ／＊自由排列，加退選＊／
